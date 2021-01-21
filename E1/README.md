@@ -1,3 +1,3 @@
-# Test Project
+# Shopping Spree
 
-This is only to use code that has no other place.
+Rudimentary endless game where the player must click an item of a certain category when prompted.

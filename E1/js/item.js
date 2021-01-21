@@ -23,14 +23,19 @@ class Item
         this.img = images[type][randomInt(3)];
     }
 
-    static Random()
+    static Random(currentType = -1)
     {
+        let newType;
+
+        do { newType = randomInt(images.length); }
+        while(newType == currentType)
+
         return new Item
         (
             new Vector2D(Math.random() * width, Math.random() * reducedHeight), 
             Vector2D.Random().Scale(2), 
             Math.random() * 100 + 150, 
-            randomInt(4)
+            newType
         );
     }
 
@@ -94,7 +99,7 @@ class Item
      */
     isCorrectType()
     {
-        if(this.type == wantedTypeNum) { return true; }
+        if(this.type == wantedType) { return true; }
         else { false; }
     }
 }

@@ -1,18 +1,30 @@
+/*
+  Exercise 2 - Shopping Spree
+  
+  Rudimentary game where the player must click on items of a certain category when prompted.
+  Something something consumerism, whatever.
+*/
+
+"use strict"
+
 
 //Tracks if the user has clicked their mouse on the specific frame it's called on.
 let mouseClick = false;
 
-//
+//The height of the screen where items can bounce around. Accounts for the message bar at the bottom of the screen.
 let reducedHeight;
 
-//
+//The time in frames remaining for the wanted type and message at the bottom of the screen to update.
+//Used most of the time as a time pressure for the player to find a wanted item.
 let timer;
 
-//
-let wantedTypeNum;
-let wantedTypeText;
+//The type of the currently desired item. 
+//Value of -1 is used when the player isn't fetching items.
+let wantedType;
+//Text displayed at the bottom of the screen telling the player what to do.
+let objectiveText;
 
-//
+//Contains 3 images in a sub-array for each item type.
 let images = [[],[],[],[]];
 
 
@@ -58,15 +70,20 @@ function setup()
 
     textAlign(CENTER,CENTER);
     textSize(20);
-    fill(125);
+    fill(255);
 
+    //Create 25 objects with random position, velocity directions and types.
     for(let i = 0; i < 25; i++)
     {
         Item.current[i] = Item.Random();
-        Item.current[i].display();
     }
-    switchType();
-    timer = 180;
+
+    //As we're displaying a non-fetching message, set the wanted type to -1.
+    wantedType = -1;
+    objectiveText = 'Help me on my shopping spree! Click the items on the screen when I ask for them.'
+    
+    //Give extended time for the player to read the objective without time pressure.
+    timer = 300;
 }
 
 /**
@@ -75,15 +92,23 @@ function setup()
  */
 function draw()
 {
+    //If the
     if(mouseClick)
     {
-        for(let i = Item.current.length - 1; i > 0; i--)
+        for(let i = Item.current.length - 1; i >= 0; i--)
         {
             if(Item.current[i].isMouseNear() && Item.current[i].isCorrectType())
             {
-                Item.current[i] = Item.Random();
+                //This prevents all objects from getting the same type trough extreme luck.
+
+                //Create a new item with a type different than the one that was selected.
+                Item.current[i] = Item.Random(Item.current);
+                
+                //Switch to a different desired type and reset the timer.
                 switchType();
                 timer = 180;
+
+                //Since a valid item was found, checking any further isn't required.
                 break;
             }
         }
@@ -93,25 +118,51 @@ function draw()
     //Will be corrected by 'mousePressed' if the user does click.
     mouseClick = false;
 
-    if(timer > 0) { timer--; }
 
 
+    if(timer <= 0) 
+    {
+
+        if(wantedType < 0)
+        {
+            switchType();
+        }
+        //
+        else
+        {
+            wantedType = -1;
+
+            objectiveText = 'CAN I GET YOUR ATTENTION PLEASE?';
+        }
+
+        //Reset the timer to 180, no matter the new objective.
+        timer = 180;
+    }
+    //Decrease the timer.
+    else { timer--; }
+
+
+    //Draw grey background.
     background(175);
 
+    //Update all items on screen.
     for(let i = 0; i < Item.current.length; i++)
     {
         Item.current[i].move();
         Item.current[i].display();
     }
 
+    //Draw a black bar at the bottom of the screen.
     stroke(0);
     line(0, reducedHeight + 13, width, reducedHeight + 13);
 
-    stroke(0,255,0);
+    //Draw a green bar with length representing the timer over the black one.
+    stroke(0,175,0);
     line(0, reducedHeight + 13,(timer / 180) * width, reducedHeight + 13);
 
+    //Write over both bars what is the next item to click.
     noStroke();
-    text(`I am looking for ${wantedTypeText}.`, 0.5 * width, reducedHeight + 14);
+    text(objectiveText, 0.5 * width, reducedHeight + 14);
 }
 
 
@@ -124,26 +175,29 @@ function mousePressed() { mouseClick = true; }
 
 
 /**
- * 
+ * Sets the wanted type to a different one that is present on the screen.
  */
 function switchType()
 {
-    //
+    //Tracks the new type to be selected. 
+    //Prevents against re-selecting the same type.
     let newType;
 
-    //
-    do { newType = randomInt(4); }
-    while(newType == wantedTypeNum);
+    //Get the type of a random item on screen.
+    do { newType = Item.current[randomInt(Item.current.length)].type; }
+    //Keep re-rolling until we get a different type than the last.
+    while(newType == wantedType);
 
-    //
-    wantedTypeNum = newType;
+    //Set the new type.
+    wantedType = newType;
 
-    switch(wantedTypeNum)
+    //Update the text at the bottom of the screen.
+    switch(wantedType)
     {
-        case 0: wantedTypeText = 'a piece of CLOTHING'; break;
-        case 1: wantedTypeText = 'some FOOD'; break;
-        case 2: wantedTypeText = 'a piece of FURNITURE'; break;
-        case 3: wantedTypeText = 'an ELECTRONIC item'; 
+        case 0: objectiveText = `I need a new piece of CLOTHING.`;          break;
+        case 1: objectiveText = `I'm hungry. Can you get me some FOOD?`;   break;
+        case 2: objectiveText = `I want some new FURNITURE.`;              break;
+        case 3: objectiveText = `I am looking for a new ELECTRONIC item.`; break;
     }
 }
 
