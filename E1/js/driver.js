@@ -89,7 +89,7 @@ function setup()
 }
 
 /**
- * 
+ * Check if the user found a matching object, updates the timer and objects, draws the frame.
  * Is called 60 times per second.
  */
 function draw()
@@ -102,7 +102,7 @@ function draw()
         {
             //First check if the item is of the correct type. If it is, then check if the mouse is near enough.
             //This is in this order because the latter takes more computation to do.
-            if(Item.current[i].isCorrectType() && Item.current[i].isMouseNear())
+            if(Item.current[i].isWantedType() && Item.current[i].isMouseNear())
             {
                 //Create a new item with a type different than the one that was selected.
                 Item.current[i] = Item.Random(Item.current[i].type);
@@ -213,7 +213,8 @@ function switchType()
 
 /**
  * Returns a random integer higher or equal to 0 and less than 'max'.
- * @param {Number} limit The returned number's maximal limit (exclusive).
+ * @param {Number} limit The randomized number's maximal limit (exclusive).
+ * @returns {Number} Randomized integer within the boundaries.
  */
 function randomInt(limit)
 {
