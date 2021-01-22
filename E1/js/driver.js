@@ -18,7 +18,7 @@ let reducedHeight;
 //Used most of the time as a time pressure for the player to find a wanted item.
 let timer;
 
-//The type of the currently desired item. 
+//The type of item the player must find. 
 //Value of -1 is used when the player isn't fetching items.
 let wantedType;
 //Text displayed at the bottom of the screen telling the player what to do.
@@ -53,36 +53,38 @@ function preload()
 
 
 /**
- * 
+ * Sets up general display settings, creates items and sets the objective for the game to start.
  * Is called once on startup.
  */
 function setup()
 {
-    //
+    //Create a canvas taking up the entire window and calculate the height used for items.
     createCanvas(windowWidth, windowHeight);
-    reducedHeight = windowHeight - 25;
-    background(175);
+    reducedHeight = height - 25;
 
+    
+    //Align images from the center.
     imageMode(CENTER);
-
+    
+    //Make lines thick with square ends.
     strokeWeight(25);
     strokeCap(SQUARE);
-
+    
+    //Make text large, white and align it from the center.
     textAlign(CENTER,CENTER);
     textSize(20);
     fill(255);
 
-    //Create 25 objects with random position, velocity directions and types.
-    for(let i = 0; i < 25; i++)
-    {
-        Item.current[i] = Item.Random();
-    }
 
-    //As we're displaying a non-fetching message, set the wanted type to -1.
-    wantedType = -1;
+    //Create 25 objects with random position, velocity directions and types.
+    for(let i = 0; i < 25; i++) { Item.current[i] = Item.Random(); }
+
+    //Display intro message.
     objectiveText = 'Help me on my shopping spree! Click the items on the screen when I ask for them.'
+    //As we're displaying a non-objective message, set the wanted type to -1.
+    wantedType = -1;
     
-    //Give extended time for the player to read the objective without time pressure.
+    //Give extended time for the player to read the intro message without time pressure.
     timer = 300;
 }
 
@@ -92,20 +94,26 @@ function setup()
  */
 function draw()
 {
-    //If the
+    //Only do verifications on the first frame of a mouse click.
     if(mouseClick)
     {
+        //Check items from last to first in the array as to check items rendered last (on top of others) before checking the ones behind them. 
         for(let i = Item.current.length - 1; i >= 0; i--)
         {
-            if(Item.current[i].isMouseNear() && Item.current[i].isCorrectType())
+            //First check if the item is of the correct type. If it is, then check if the mouse is near enough.
+            //This is in this order because the latter takes more computation to do.
+            if(Item.current[i].isCorrectType() && Item.current[i].isMouseNear())
             {
-                //This prevents all objects from getting the same type trough extreme luck.
-
                 //Create a new item with a type different than the one that was selected.
-                Item.current[i] = Item.Random(Item.current);
-                
-                //Switch to a different desired type and reset the timer.
+                Item.current[i] = Item.Random(Item.current[i].type);
+
+                //Since new items can't get the same type as the currently wanted one, 
+                //there is no way the game could encounter a scenario where it can't choose
+                //a new wanted type, even if all items are the same.
+
+                //Find an item with type different than the currently wanted one and set that type as the wanted one.
                 switchType();
+                //Give some time for the player to find a new item.
                 timer = 180;
 
                 //Since a valid item was found, checking any further isn't required.
@@ -114,38 +122,38 @@ function draw()
         }
     }
 
-    //Now that any logic is done, assume that the user won't click next frame.
+    //Now that all logic involving mouse clicks is done, assume that the user won't click next frame.
     //Will be corrected by 'mousePressed' if the user does click.
     mouseClick = false;
 
 
-
+    //If the timer is over, then update the player's objective.
     if(timer <= 0) 
     {
-
-        if(wantedType < 0)
-        {
-            switchType();
-        }
-        //
+        //If the wanted type isn't valid, then the player wasn't tasked with finding an item. 
+        //Simply switch the wanted type to a valid one. 
+        if(wantedType < 0) { switchType(); }
+        
+        //If the wanted type is valid, then the player ran out of time to find a matching item.
         else
         {
-            wantedType = -1;
-
+            //Make the player feel bad. Probably.
             objectiveText = 'CAN I GET YOUR ATTENTION PLEASE?';
+            //As we're displaying a non-objective message, set the wanted type to -1.
+            wantedType = -1;
         }
 
-        //Reset the timer to 180, no matter the new objective.
+        //Reset the timer to 180, no matter the new message.
         timer = 180;
     }
-    //Decrease the timer.
+    //Otherwise, decrease the timer.
     else { timer--; }
 
 
     //Draw grey background.
     background(175);
 
-    //Update all items on screen.
+    //Update all items on screen and display them.
     for(let i = 0; i < Item.current.length; i++)
     {
         Item.current[i].move();
@@ -160,8 +168,9 @@ function draw()
     stroke(0,175,0);
     line(0, reducedHeight + 13,(timer / 180) * width, reducedHeight + 13);
 
-    //Write over both bars what is the next item to click.
+    //Prevents the text from getting an outline.
     noStroke();
+    //Write the objective in the middle, over both bars.
     text(objectiveText, 0.5 * width, reducedHeight + 14);
 }
 
@@ -204,11 +213,11 @@ function switchType()
 
 /**
  * Returns a random integer higher or equal to 0 and less than 'max'.
- * @param {*} max The returned number's maximal limit (exclusive).
+ * @param {Number} limit The returned number's maximal limit (exclusive).
  */
-function randomInt(max)
+function randomInt(limit)
 {
-    return Math.floor(Math.random() * max);
+    return Math.floor(Math.random() * limit);
 }
 
 
@@ -221,5 +230,5 @@ function windowResized()
     //Resizes the canvas with the values of the window
     resizeCanvas(windowWidth, windowHeight);
     //Recalculate the screen height used for items.
-    reducedHeight = windowHeight - 25;
+    reducedHeight = height - 25;
 }
