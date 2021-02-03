@@ -12,15 +12,18 @@ let adjective = ``;
 let object = ``;
 let sentenceGen = ``;
 
-let voice;
-let pitch;
+let canGuess = false;
+let correct;
+
+let speechVoice;
+let speechPitch;
 
 let predicateList = 
 [
     `am a`,
     `want to be a`,
     `feel like a`,
-    `ressemble a`,
+    `resemble a`,
     `smell like a`,
     `am thinking about a`,
     `am watching a`,
@@ -35,7 +38,7 @@ let adjectiveList =
 [
     `real`,
     `fake`,
-    `grey`,
+    `white`,
     `heavy`,
     `dirty`,
     `clean`,
@@ -45,10 +48,9 @@ let adjectiveList =
     `wide`,
     `toy`,
     `plastic`,
-    `wooden`,
     `fragile`,
     `fancy`,
-    `cute`,
+    `huge`,
     `fine`
 ];
 
@@ -57,7 +59,7 @@ let objectList =
     `goose`,
     `duck`,
     `carrot`,
-    `celery`,
+    `mushroom`,
     `smart car`,
     `truck`,
     `air vent`,
@@ -68,6 +70,8 @@ let objectList =
     `shoe`,
     `shirt`,
     `keyboard`,
+    `cellphone`,
+    `radiator`,
     `table`,
     `snowman`
 ];
@@ -84,7 +88,7 @@ let voices =
     "Hindi Male",
     "Bangla India Male",
     "Chinese (Hong Kong) Female",
-    "Chinese Taiwan Female"
+    //"Chinese Taiwan Female"
 ];
 
 
@@ -93,7 +97,6 @@ let voices =
 function setup() 
 {
     createCanvas(windowWidth, windowHeight);
-
 
     if (annyang) 
     {
@@ -104,11 +107,15 @@ function setup()
     }
 
     //Default text settings.
-    textSize(50);
+    fill(200);
+    textSize(45);
     textStyle(BOLD);
-    textAlign(LEFT, CENTER);
+    textAlign(LEFT, TOP);
 
     background(0);
+    text(`Are you a ROBOT?`, 25, 25);
+    text(`Repeat the given prompt to prove you're human.`, 25, 100);
+    text(`Click anywhere to start.`, 25, 400);
 }
 
 
@@ -117,61 +124,97 @@ function setup()
  */
 function draw() 
 {
-
 }
 
 function hearGuess(heardSpeech)
 {
-    background(0);
-    console.warn(heardSpeech);
-    guess = heardSpeech;
-
-    fill(200);
-    text(`SUBJECT:`, 50, 200);
-    guessIncludes(`I`);
-    text(`I`, 400, 200);
-
-
-    fill(200);
-    text(`PREDICATE:`, 50, 250);
-    guessIncludes(predicate);
-    text(predicate, 400, 250);
+    if(canGuess)
+    {
+        canGuess = false;
+        correct = true;
+        guess = heardSpeech.substring(0,1).toUpperCase() + heardSpeech.substring(1).toLowerCase();
+    
+        background(0);
+        fill(200);
+        text(`RESULTS`, 25, 25);
+    
+        text(`INPUT:`, 50, 125);
+        text(`${guess}.`, 450, 125);
 
 
-    fill(200);
-    text(`ADJECTIVE:`, 50, 300);
-    guessIncludes(adjective);
-    text(adjective, 400, 300);
+        text(`ANSWER`, 50, 235);
 
+        text(`SUBJECT:`, 75, 300);
+        guessIncludes(`I`, 0);
+        text(`I`, 450, 300);
+    
+        fill(200);
+        text(`PREDICATE:`, 75, 350);
+        guessIncludes(predicate, 1);
+        text(predicate, 450, 350);
+    
+        fill(200);
+        text(`ADJECTIVE:`, 75, 400);
+        guessIncludes(adjective, 2);
+        text(adjective, 450, 400);
+    
+        fill(200);
+        text(`OBJECT:`, 75, 450);
+        guessIncludes(object, 3);
+        text(object, 450, 450);
 
-    fill(200);
-    text(`OBJECT:`, 50, 350);
-    guessIncludes(object);
-    text(object, 400, 350);
+        fill(200);
+        text(`You are ` + (correct ? `HUMAN`:`a ROBOT`) + `.\nClick to try again.`, 25, 600);
+    }
+
 }
+
 
 function guessIncludes(string)
 {
-    if(guess.includes(string)) { fill(0, 255, 0); }
-    else { fill(255, 0, 0); }
+    if(guess.includes(string.replace(`am `, ``))) 
+    { 
+        fill(0, 255, 0); 
+    }
+    else 
+    { 
+        fill(255, 0, 0);
+        correct = false; 
+    }
 }
 
 function mousePressed()
 {
-    background(0);
-
-    predicate = predicateList[randomInt(predicateList.length)];
-    adjective = adjectiveList[randomInt(adjectiveList.length)];
-    object = objectList[randomInt(objectList.length)];
+    if(!canGuess)
+    {
+        background(0);
+        fill(200);
+        text(`Listen closely.`, 25, 25)
     
-    sentenceGen = `I ${predicate} ${adjective} ${object}`;
+        predicate = predicateList[randomInt(predicateList.length)];
+        adjective = adjectiveList[randomInt(adjectiveList.length)];
+        object = objectList[randomInt(objectList.length)];
 
-    voice = voices[randomInt(voices.length)];
-    pitch = Math.random() + 0.5;
+        responsiveVoice.speak(`I ${predicate} ${adjective} ${object}`, voices[randomInt(voices.length)], { pitch: Math.random()*0.5 + 0.75, onend: speechEnd });
+    }
+}
 
-    console.warn(`VOICE: ${voice}, PITCH: ${pitch.toFixed(2)}, SENTENCE: ${sentenceGen}.`);
+function speechEnd()
+{
+    canGuess = true;
 
-    responsiveVoice.speak(sentenceGen, voice, pitch);
+    background(0);
+    fill(200);
+    text(`Repeat the given prompt.\n\n`,25, 25);
+    textSize(30);
+    text(`You can write your answer in the console in the format:   answer("YOUR_ANSWER");   if you don't want to use a microphone.\n\nThe console can be opened with: Ctrl+Shift+I`, 25, 150, 750, 500);
+    textSize(45);
+
+}
+
+function answer(string)
+{
+    annyang.trigger(string);
 }
 
 /**
@@ -183,4 +226,7 @@ function randomInt(limit)
 {
     return Math.floor(Math.random() * limit);
 }
+
+console.log = function() {}
+console.clear();
 
