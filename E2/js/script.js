@@ -173,7 +173,7 @@ function guessAnswer(heard)
 
         //Write the sentence's subject (always "I") in green/red depending if the user guessed correctly.
         text(`SUBJECT:`, 75, 300);
-        guessIncludes(`i`);
+        guessIncludes(`i `);
         text(`I`, 450, 300);
     
         //Write the sentence's predicate in green/red depending if the user guessed correctly.
