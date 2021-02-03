@@ -230,8 +230,8 @@ function guessIncludes(string)
  */
 function mousePressed()
 {
-    //Only allow next sentence to be generated and play if the previous one has received a guess. 
-    if(!canGuess)
+    //Only allow next sentence to be generated and play if the previous one has received a guess and a sentence isn't being spoken. 
+    if(!canGuess && !responsiveVoice.isPlaying())
     {
         //Render over the last frame. Black background.
         background(0);
