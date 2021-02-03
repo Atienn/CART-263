@@ -152,8 +152,9 @@ function guessAnswer(heard)
         //Assume that the user's guess is correct.
         correct = true;
 
-        //Save the guess in lowercase as to ignore case-sensitivity when comparing strings.
-        guess = heard.toLowerCase();
+        //Save the guess in lowercase (except for first letter to verify for subject)
+        // as to ignore case-sensitivity when comparing strings.
+        guess = heard.substring(0,1).toUpperCase() + heard.substring(1).toLowerCase();
     
 
         //Render over the last frame. Black background.
@@ -165,7 +166,7 @@ function guessAnswer(heard)
     
         //Write the user's guess in sentence case (only first letter is capitalized) farther down.
         text(`INPUT:`, 50, 125);
-        text(`${guess.substring(0,1).toUpperCase() + guess.substring(1)}.`, 450, 125);
+        text(`${guess}.`, 450, 125);
 
 
         //Write the answer further down.
@@ -173,7 +174,7 @@ function guessAnswer(heard)
 
         //Write the sentence's subject (always "I") in green/red depending if the user guessed correctly.
         text(`SUBJECT:`, 75, 300);
-        guessIncludes(`i `);
+        guessIncludes(`I`);
         text(`I`, 450, 300);
     
         //Write the sentence's predicate in green/red depending if the user guessed correctly.
