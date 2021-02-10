@@ -2,65 +2,105 @@
   Exercise 3
   
 */
+"use strict";
 
-let userProfile = 
-{
-  username: ``,
-  password: ``
-}
+let userData;
+let input = ``;
+let score = 0;
+let state;
 
-let userInput = ``;
-
-/**
- * This function is called and completed before others start.
- */
-function preload()
-{
-
-}
 
 /**
  * Is called once on startup.
  */
 function setup()
 {
+    //Create a window-sized black canvas.
     createCanvas(windowWidth, windowHeight);
     background(0);
+
     fill(200);
-    textSize(50);
-    textAlign(CENTER, CENTER);
+    rectMode(CENTER);
+
+    //Make text large and aligned from the center.
+    textSize(45);
+    textAlign(LEFT, CENTER);
+
+
+    //Check if there is already data stored.
+    userData = JSON.parse(localStorage.getItem(`E3:UserData`));
+    
+    //If user data doesn't exist yet, create new empty data holder.
+    if(!userData) 
+    {
+        userData = { userCount: 0, users: [] };
+        localStorage.setItem(`E3:UserData`, JSON.stringify(userData));
+    }
+
+    switchState(leaderboard);
 }
 
 
 /**
  * Is called once per frame.
  */
-function draw()
-{
-    background(0);
-    text(userInput, width/2, height/2);
-}
+function draw() { state.update(); }
 
 
 /**
- * Adds the pressed key to the user input if it is a letter.
  * Is called when the user types a key (ignores function keys like Shift and Control).
  */
-function keyTyped()
-{
-  //Makes the key's string uppercase to simplify verification.
-  key = key.toUpperCase();
+function keyTyped() { state.keyType(); }
 
-  //Checks if the pressed key contains a character between A and Z.
-  //Since function keys are ignored, only letter keys should be able to be added.
-  if(/[A-Z]/.test(key)) { userInput += key; }
-}
 
 /**
- * Clears user input if the backspace key is pressed.
  * Is called whenever the user is types a key on their keyboard.
  */
-function keyPressed() 
+function keyPressed() { state.keyPress(); }
+
+
+/**
+ * Adjusts the size of what's displayed to match the window.
+ * Is automatically called if the window is resized at any point.
+ */
+function windowResized()
 {
-    if (keyCode === BACKSPACE) { userInput = ``; }
+    //Resizes the canvas with the dimensions of the window.
+    resizeCanvas(windowWidth, windowHeight);
+}
+
+
+
+/** Safely switches to a new state by calling it's setup function first. */
+function switchState(newState)
+{
+    newState.setup();
+    state = newState;
+}
+
+
+/**
+ * 
+ */
+function addNewUser(userName, userScore)
+{
+    let alreadyTaken;
+
+    for(let i = 0; i < userData.users.length; i++)
+    {
+        if(userData.users[i].userName == userName) { alreadyTaken = true; }
+    }
+
+    if(alreadyTaken) { alert(`Username '${userName}' is already taken!`); }
+    else
+    {
+        //Simultaneously add a new user to the users array and updates the user count.
+        userData.userCount = userData.users.push({ name: userName, score: userScore });
+
+        //Sort the array by user score (from highest to lowest).
+        userData.users.sort((userA, userB) => { return userB.score - userA.score; })
+
+        //Override the old user data to save the new user.
+        localStorage.setItem(`E3:UserData`, JSON.stringify(userData));
+    }
 }
