@@ -5,10 +5,7 @@
 "use strict";
 
 let userData;
-let input = ``;
-let score = 0;
 let state;
-
 
 /**
  * Is called once on startup.
@@ -19,24 +16,20 @@ function setup()
     createCanvas(windowWidth, windowHeight);
     background(0);
 
-    fill(200);
+    frameRate(20);
+
     rectMode(CENTER);
 
     //Make text large and aligned from the center.
     textSize(45);
-    textAlign(LEFT, CENTER);
 
 
     //Check if there is already data stored.
     userData = JSON.parse(localStorage.getItem(`E3:UserData`));
-    
     //If user data doesn't exist yet, create new empty data holder.
-    if(!userData) 
-    {
-        userData = { userCount: 0, users: [] };
-        localStorage.setItem(`E3:UserData`, JSON.stringify(userData));
-    }
+    if(!userData) { resetUserData(); }
 
+    //
     switchState(leaderboard);
 }
 
@@ -74,8 +67,8 @@ function windowResized()
 /** Safely switches to a new state by calling it's setup function first. */
 function switchState(newState)
 {
-    newState.setup();
     state = newState;
+    newState.setup();
 }
 
 
@@ -103,4 +96,11 @@ function addNewUser(userName, userScore)
         //Override the old user data to save the new user.
         localStorage.setItem(`E3:UserData`, JSON.stringify(userData));
     }
+}
+
+/** Overrides current user data (if any) with an empty object. */
+function resetUserData()
+{
+    userData = { userCount: 0, users: [] };
+    localStorage.setItem(`E3:UserData`, JSON.stringify(userData));
 }
