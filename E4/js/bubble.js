@@ -81,20 +81,20 @@ class Bubble
         if(hands.length > 0)
         {
             //For each bubble...
-            for(let i = 0; i < Bubble.current.length; i++)
+            for(let i = 0; i < this.current.length; i++)
             {
-                //For each point on the hand (fingers and palm)...
-                for(let j = 0; j < hands[0].landmarks.length; j++)
+                //For each 'node' (recognized point on the hand)...
+                hands[0].landmarks.forEach(node => 
                 {
                     //Checks if the distance between the bubble and the point on the hand is smaller than the bubble's radius.
-                    if(dist(Bubble.current[i].px, Bubble.current[i].py, hands[0].landmarks[j][0], hands[0].landmarks[j][1]) < Bubble.current[i].radius)
+                    if(dist(this.current[i].px, this.current[i].py, node[0], node[1]) < this.current[i].radius)
                     {
                         //If it is, 'pop' the bubble (replace it with a new one).
                         this.current[i] = this.random();
                         //Increase the score by 1.
                         game.score++;
                     }
-                }
+                });
             }
         }
     }
