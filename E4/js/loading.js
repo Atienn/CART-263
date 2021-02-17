@@ -1,20 +1,16 @@
 "use strict";
 
-/** Displays letters the user must type to increase thier score. */
+/** Displays a basic loading screen. */
 let loading =
 {
     impatientText: false,
 
-    /** Sets up display settings and resets game values. */
+    /** Sets up display settings. */
     setup() 
     {
         //Make text bold and aligned from the center.
         textStyle(BOLD);
         textAlign(CENTER, CENTER);
-
-        //Enable stroke and removes its caps.
-        strokeWeight(10);
-        strokeCap(SQUARE);
 
         //Makes text and shapes grey.
         fill(100);
@@ -22,7 +18,7 @@ let loading =
         strokeWeight(3);
         stroke(250);
 
-        //
+        //Tracks if the user has tried pressing a button on the loading screen.
         this.impatientText = false;
     },
 
@@ -33,11 +29,11 @@ let loading =
         //Black background.
         background(0);
         
-        //Instructions at the top of the screen.
+        //Print a loading sign in the middle of the screen.
         textSize(50);
         text('Loading...', width/2, height/2);
 
-        //NO >:(
+        //Add a bit of interactivity.
         if(this.impatientText) 
         {
             textSize(35); 
@@ -45,7 +41,7 @@ let loading =
         }
     },
 
-    /** Tells the user to stop. */
+    /** Tells the user to keep waiting. */
     keyPress() 
     {
         this.impatientText = true;

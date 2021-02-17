@@ -11,7 +11,7 @@ class Bubble
      * @param {Number} py The y coordinate of the bubble's position.
      * @param {Number} vx The x coordinate of the bubble's velocity.
      * @param {Number} vy The y coordinate of the bubble's velocity.
-     * @param {Number} radius 
+     * @param {Number} radius The bubble's size on screen.
      */
     constructor(x, y, vx, vy, radius)
     {
@@ -29,7 +29,7 @@ class Bubble
     /** Returns a new bubble with random values. */
     static random()
     {
-        //Generate a random angle.
+        //Generate a random angle for the velocity.
         let angle = Math.random() * TWO_PI;
 
         return new Bubble
@@ -45,12 +45,9 @@ class Bubble
     /** Re-generates the bubble array. */
     static resetCurrent()
     {
+        //Set an empty array and give it 20 new random bubbles.
         this.current = [];
-        for(let i = 0; i < 20; i++) 
-        { 
-            //Add a new random bubble to the start of the array.
-            this.current.unshift(this.random()); 
-        }
+        for(let i = 0; i < 20; i++) { this.current[i] = this.random(); }
     }
 
 
@@ -66,7 +63,6 @@ class Bubble
         //Make shapes grey and transparent.
         fill(125, 0.5);
 
-        //
         for(let i = 0; i < this.current.length; i++)
         {
             this.current[i].move();
@@ -78,18 +74,24 @@ class Bubble
     }
 
 
+    /** Goes through the bubble array and checks if any of them should be popped. */
     static checkAll()
     {
+        //Don't do anything if no hand is recognized.
         if(hands.length > 0)
         {
+            //For each bubble...
             for(let i = 0; i < Bubble.current.length; i++)
             {
+                //For each point on the hand (fingers and palm)...
                 for(let j = 0; j < hands[0].landmarks.length; j++)
                 {
+                    //Checks if the distance between the bubble and the point on the hand is smaller than the bubble's radius.
                     if(dist(Bubble.current[i].px, Bubble.current[i].py, hands[0].landmarks[j][0], hands[0].landmarks[j][1]) < Bubble.current[i].radius)
                     {
-                        //Replace the bubble with a new one.
+                        //If it is, 'pop' the bubble (replace it with a new one).
                         this.current[i] = this.random();
+                        //Increase the score by 1.
                         game.score++;
                     }
                 }

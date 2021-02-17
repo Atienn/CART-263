@@ -1,18 +1,14 @@
 "use strict";
 
-/** Displays instructions and score. */
+/** Displays video, instructions and score. */
 let menu =
 {
-    /** Sets up display settings and resets game values. */
+    /** Sets up display settings. */
     setup()
     {
         //Make text bold and aligned from the center.
         textStyle(BOLD);
         textAlign(CENTER, CENTER);
-
-        //Enable stroke and removes its caps.
-        strokeWeight(10);
-        strokeCap(SQUARE);
 
         //Makes text and shapes grey.
         fill(100);
@@ -22,7 +18,7 @@ let menu =
     },
 
 
-    /** Displays the letter the user must type as well as the time remaining. */
+    /** Displays captured video, hand recognition and text on screen. */
     update() 
     {
         //Draws the next captured video frame.
@@ -30,15 +26,18 @@ let menu =
         //Draw the finger joints & links if a hand is detected.
         drawHand();
 
-        //Instructions at the top of the screen.
+        //Title and instructions at the top of the screen.
         textSize(50);
         text('Bubble Popper Plus', width/2, 35);
         textSize(35);
-        text(`The hand detector works best well-lit situations.\nPress SPACE to start.`, width/2, 150);
-        text(`Highest score: ${hScore}.`, width/2, height - 35);
+        text(`Show your hand to the camera!\n(Works best in well-lit rooms)`, width/2, 150);
+        text('Press SPACE to start.', width/2, 250);
+
+        //Score at the bottom of the screen.
+        text(`Highest score: ${highScore}.`, width/2, height - 35);
     },
 
-    /** Moves to the game state. */
+    /** Moves to the game state if SPACE is pressed. */
     keyPress() 
     {
         if(keyCode == 32) { switchState(game); }

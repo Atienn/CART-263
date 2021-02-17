@@ -1,8 +1,7 @@
 /*
-  Exercise 4 - 
+  Exercise 4 - Bubble Popper Plus
   
-  Basic game where the user must type as many letters displayed on screen as possible.
-  Saves player score and name locally. 
+  Basic game where the user can use thier hand with a camera to 'pop' bubbles on screen.
 */
 
 "use strict";
@@ -14,7 +13,7 @@ let video;
 //The hands detected on screen, if any.
 let hands;
 //The user's highest score.
-let hScore = 0;
+let highScore = 0;
 
 
 /**
@@ -23,27 +22,27 @@ let hScore = 0;
  */
 function setup()
 {
-    //Create a window-sized black canvas.
+    //Create a large canvas.
     createCanvas(1280, 720);
-    
-    //Slow framerate. The game has no animation so this just 
-    //lightens the computational load at basically no cost.
+    //Lower framereate to lighten the computational load.
     frameRate(30);
-
     //Make recatangles drawn from the center (applies for all game states).
     rectMode(CENTER);
     ellipseMode(CENTER);
+
 
     //Start in the loading state and call its setup.
     state = loading;
     loading.setup();
 
-    
-    video = createCapture({ video: { mandatory: { minWidth: width, maxWidth: width, minHeight: height, maxHeight: height }, optional: [{ maxFrameRate: 30 }] }, audio: false });
-    video.hide();
-        
-    handpose = ml5.handpose(video, { flipHorizontal: true }, () => { switchState(menu); });
 
+    //Try to start recording. Force the captured video resolution to match the canvas'.
+    video = createCapture({ video: { mandatory: { minWidth: width, maxWidth: width, minHeight: height, maxHeight: height }, optional: [{ maxFrameRate: 30 }] }, audio: false });
+    //Hide the auto-generated display. The video will be used in the canvas directly.
+    video.hide();
+
+    //Load handpose, but flip its output horisontally to make it a mirror of reality.
+    handpose = ml5.handpose(video, { flipHorizontal: true }, () => { switchState(menu); });
     //Ask handpose to predict the position of hands on screen and send the result to 'hands'.
     handpose.on(`predict`, (results) => { hands = results; });
 }
@@ -72,7 +71,9 @@ function switchState(newState)
 }
 
 /**
- * 
+ * Draw the next frame from the captured video but invert it vertically to 
+ * make it act as a mirror rather than a direct representation.
+ * (If the user moves thier hand left, it shouldn't move right on screen.)
  */
 function drawVideo()
 {
