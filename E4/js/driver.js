@@ -104,6 +104,13 @@ function drawHand()
         drawFinger(hands[0].annotations.middleFinger);
         drawFinger(hands[0].annotations.ringFinger);
         drawFinger(hands[0].annotations.pinky);
+
+        //Draw a larger node at the wrist (it's not included in any finger.)
+        circle(hands[0].landmarks[0][0], hands[0].landmarks[0][1], 20);
+
+        //Draw a new smaller circle over every node. 
+        //Gives tips to fingers and stylises all other nodes.
+        hands[0].landmarks.forEach(node => { circle(node[0], node[1], 5);});
     }
 }
 
@@ -113,6 +120,9 @@ function drawHand()
  */
 function drawFinger(finger)
 {
+    //Create a link to the wrist.
+    line(finger[0][0], finger[0][1], hands[0].landmarks[0][0], hands[0].landmarks[0][1]);
+
     //Each finger has 4 positions.
     for(let i = 0; i < 3; i++)
     {
