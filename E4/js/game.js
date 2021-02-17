@@ -21,6 +21,12 @@ let game =
         strokeWeight(10);
         strokeCap(SQUARE);
 
+        //Makes text and shapes grey.
+        fill(100);
+        //Gives an thin white outline to text and shape.
+        strokeWeight(3);
+        stroke(250);
+
         //Reset score, first letter and timer.
         this.score = 0;
         this.timer = 300;
@@ -30,11 +36,11 @@ let game =
     /** Displays the letter the user must type as well as the time remaining. */
     update() 
     {
-        //Black background.
-        background(0);
-        
-        //Disables stroke for the following text.
-        noStroke();
+        //
+        drawVideo();
+
+        //Draw the finger joints & links if a hand is detected.
+        drawHand();
 
         //Instructions at the top of the screen.
         textSize(50);
@@ -42,18 +48,14 @@ let game =
         textSize(35);
         text(`Current score: ${this.score}.`, width/2, 100);
 
-        //Display the [...] in the center.
-        textSize(200);
-        circle();
 
         //Display the remaining time as a line at the bottom of the screen.
-        stroke(150);
         line(0, height - 5, (this.timer / 300) * width, height - 5);
 
         //Ticks the timer down if it's not over.
         if(this.timer > 0) { this.timer--; }
         //Otherwise, switch to the next state where the user can enter thier name.
-        else { switchState(); }
+        else { switchState(menu); }
     },
 
     /** Skips the game phase. Used for debug/testing. */
