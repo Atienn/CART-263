@@ -1,6 +1,6 @@
 "use strict";
 
-/** Displays letters the user must type to increase thier score. */
+/** Displays instructions and score. */
 let menu =
 {
     /** Sets up display settings and resets game values. */
@@ -25,17 +25,17 @@ let menu =
     /** Displays the letter the user must type as well as the time remaining. */
     update() 
     {
-        //
+        //Draws the next captured video frame.
         drawVideo();
-
         //Draw the finger joints & links if a hand is detected.
         drawHand();
 
         //Instructions at the top of the screen.
         textSize(50);
-        text('Bubble Popper ++', width/2, 35);
+        text('Bubble Popper Plus', width/2, 35);
         textSize(35);
-        text(`Press SPACE to start.`, width/2, 100);
+        text(`The hand detector works best well-lit situations.\nPress SPACE to start.`, width/2, 150);
+        text(`Highest score: ${hScore}.`, width/2, height - 35);
     },
 
     /** Moves to the game state. */
@@ -43,4 +43,7 @@ let menu =
     {
         if(keyCode == 32) { switchState(game); }
     },
+
+    /** Do nothing, used by other state(s). */
+    quit() { }
 }

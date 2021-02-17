@@ -13,6 +13,8 @@ let state;
 let video;
 //The hands detected on screen, if any.
 let hands;
+//The user's highest score.
+let hScore = 0;
 
 
 /**
@@ -30,9 +32,11 @@ function setup()
 
     //Make recatangles drawn from the center (applies for all game states).
     rectMode(CENTER);
+    ellipseMode(CENTER);
 
-    //Start in the loading state.
-    switchState(loading);
+    //Start in the loading state and call its setup.
+    state = loading;
+    loading.setup();
 
     
     video = createCapture({ video: { mandatory: { minWidth: width, maxWidth: width, minHeight: height, maxHeight: height }, optional: [{ maxFrameRate: 30 }] }, audio: false });
@@ -59,9 +63,10 @@ function draw() { state.update(); }
 function keyPressed() { state.keyPress(); }
 
 
-/** Safely switches to a new state by calling it's setup function first. */
+/** Safely switches to a new state by calling quit and setup functions first. */
 function switchState(newState)
 {
+    state.quit();
     state = newState;
     newState.setup();
 }

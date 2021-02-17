@@ -50,4 +50,7 @@ let loading =
     {
         this.impatientText = true;
     },
+
+    /** Do nothing, used by other state(s). */
+    quit() { }
 }
