@@ -1,0 +1,15 @@
+body 
+{
+  /* Centers the video display. */
+  padding: 0;
+  margin: 0;
+  display: grid;
+  justify-content: center;
+  align-content: center;
+
+  /*Prevents scrollbars from appearing.*/
+  overflow: hidden;
+  
+  /* Makes the page background black.*/
+  background-color: grey;
+}
