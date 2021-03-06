@@ -10,12 +10,37 @@ let imgInfo;
 let imgHolder;
 let infoRequest;
 
+let sideRight;
+let centerArea;
+let canvas;
+let currentImage;
+
 
 function setup()
 {
-    createCanvas(1500, 768);
-    background(50);
+    //Only attempt to start annyang if it is present.
+    if(annyang)
+    {
+        //Makes annyang call [] with parameter ' ' when it recognizes speech.
+        //annyang.addCommands({ '*var_name': func_name });
+        //Stars listening for voice input.
+        //annyang.start();
+    }
+
+    //Get the reference of HTML elements.
+    centerArea = document.getElementById("center");
+    sideRight = document.getElementById("right");
+    
+
+    //Create canvas and make it fit within the center area.
+    canvas = createCanvas(centerArea.clientWidth, centerArea.clientHeight);
+    canvas.parent(centerArea);
+
+    //Light grey bacground.
+    background(200);
+    //Draw images from the center.
     imageMode(CENTER);
+    
 
     //Create an html holder for the image.
     imgHolder = document.createElement('img');
@@ -25,11 +50,9 @@ function setup()
     //Loading an image after assigning it a new source is asynchronous.
     imgHolder.onload = () => 
     {
-        //Grey background.
-        background(50);
-        
         //Display the image on the canvas.
-        image(select("img"), width/2, height/2, width, height);
+        currentImage = select("img");
+        displayImage(currentImage);
 
         //Stop rendering the html image.
         imgHolder.src = "";
@@ -76,7 +99,28 @@ function showImage(tag)
 }
 
 
+/**
+ * Draws a new image onto the canvas while conserving its aspect ratio.
+ * @param {Image} img 
+ */
+function displayImage(img)
+{
+    background(200);
+    if( (img.width - width) > (img.height - height))
+    { image(currentImage, width/2, height/2, width, img.height * (width/img.width)); }
+    else
+    { image(currentImage, width/2, height/2, img.width * (height/img.height), height); }
+}
+
+
+/**
+ * Resizes the canvas and redraws its content.
+ * Is called automatically when the window is resized.
+ */
 function windowResized()
 {
+    resizeCanvas(centerArea.clientWidth, centerArea.clientHeight);
 
+    //Redraw what was on canvas.
+    if(currentImage) { displayImage(currentImage); }
 }
