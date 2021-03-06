@@ -4,11 +4,37 @@ CLEANER
 
 Built off template-p5-project.
 ****************/
-
+"use strict"
 
 let imgInfo;
 let imgHolder;
 let infoRequest;
+
+
+function setup()
+{
+    createCanvas(1500, 768);
+    background(50);
+    imageMode(CENTER);
+
+    //Create an html holder for the image.
+    imgHolder = document.createElement('img');
+    //imgHolder.style = "visibility: hidden;";
+    document.body.appendChild(imgHolder);
+
+    //Loading an image after assigning it a new source is asynchronous.
+    imgHolder.onload = () => 
+    {
+        //Grey background.
+        background(50);
+        
+        //Display the image on the canvas.
+        image(select("img"), width/2, height/2, width, height);
+
+        //Stop rendering the html image.
+        imgHolder.src = "";
+    }
+}
 
 
 function showImage(tag)
@@ -37,12 +63,11 @@ function showImage(tag)
         while(typeof imgInfo == 'undefined');
 
         //Free the memory used by the requested info since it's not needed anymore.
-        delete imgArr;
-
-
+        infoArr = null;
 
         //Construct a source link for the image element using the picture's info.
         //The '_b' at the end specifies the image size as 'large' (~1024x768).
+        //Will call imgHolder.onload() when loaded.
         imgHolder.src = `http://farm${imgInfo.farm}.staticflickr.com/${imgInfo.server}/${imgInfo.id}_${imgInfo.secret}_b.png`;
     };
 
@@ -50,28 +75,8 @@ function showImage(tag)
     infoRequest.send();
 }
 
-function start()
+
+function windowResized()
 {
-    setInterval(showImage, 1000, 'dog');
+
 }
-
-function setup()
-{
-    createCanvas(windowWidth, windowHeight);
-    background(100,0,0);
-
-    //Create an html holder for the image.
-    imgHolder = document.createElement('img');
-    //imgHolder.style = "visibility: hidden;";
-    document.body.appendChild(imgHolder);
-
-    //Loading an image after assigning it a new source is asynchronous.
-    imgHolder.onload = () => 
-    {
-        //Display the image on the canvas.
-        image(select("img"), 0, 0); 
-        //Stop rendering the html image.
-        imgHolder.src = "";
-    }
-}
-
