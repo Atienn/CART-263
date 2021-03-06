@@ -14,11 +14,24 @@
   <!-- Library scripts -->
   <script src=js/libraries/p5.min.js></script>
   <script src=js/libraries/p5.sound.min.js></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/annyang/2.6.0/annyang.min.js"></script>
 
   <!-- Custom script(s) -->
-  <script src="js/script.js"></script>
+  <script src=js/driver.js></script>
 </head>
 
-<body></body>
+<body>
+  <div id=col>
+    <header id="top"></header>
+    <div id="row">
+      <div id="left" class="side"></div>
+      <div id="center"></div>
+      <div id="right" class="side">
+        <button type="button" class="green-button" onclick=""><b>ignore</b></button>
+        <button type="button" class="red-button" onclick=""><b>delete</b></button>
+      </div>
+    </div>
+  </div>
+</body>
 
 </html>

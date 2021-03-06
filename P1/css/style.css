@@ -1,15 +1,111 @@
-body 
+/* Makes use of the entire window space available, but no more than that (no scrollbars). */
+body
 {
-  /* Centers the video display. */
-  padding: 0;
-  margin: 0;
-  display: grid;
-  justify-content: center;
-  align-content: center;
+  width: 100vw;
+  height: 100vh;
 
-  /*Prevents scrollbars from appearing.*/
+  min-width: 600px;
+  min-height: 600px;
+
+  margin: 0px;
+
   overflow: hidden;
+}
+
+
+/* Aligns the header and main row. */
+#col
+{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+
+/* Header. Thin blue line going from one end of the screen to the other. */
+#top
+{
+  width: 100%;
+  height: calc(10vh - 15px);
+
+  min-height: 25px;
+
+  background-image: linear-gradient(#057dff, #0591ff);
+}
+
+
+/* Aligns all three content columns. */
+#row
+{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+  height: calc(90vh - 15px);
+
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-bottom: 10px;
+}
+
+
+/* Gradient blue side columns. Goes from the header to the bottom of the screen (with magin space). */
+.side
+{
+  width: 12.5%;
+  height: 100%;
+
+  min-width: 150px;
+
+  margin-top: 2.5px;
   
-  /* Makes the page background black.*/
-  background-color: grey;
+  text-align: center;
+  background-image: linear-gradient(#0591ff, #c8e6ff);
+}
+#left { margin-right: 10px; }
+#right { margin-left: 10px; }
+
+
+/* Centered black column. Shorter than the two others. Will hold the p5.js canvas. */
+#center
+{
+  float: left;
+  align-self: center;
+
+  width: 75%;
+  height: 90%;
+
+  margin-top: 10px;
+
+  background-color: black;
+}
+
+
+button
+{
+  position: relative;
+  top: 35px;
+
+  width: 60%;
+  height: 30px;
+
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+
+  color: white;
+  border: 3px solid white;
+  border-radius: 12px;
+
+  font-size: large;
+}
+.green-button
+{
+  background-color: #00ff00;
+}
+
+.red-button
+{
+  background-color: red;
 }
