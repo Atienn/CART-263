@@ -67,7 +67,7 @@ body
 #right { margin-left: 10px; }
 
 
-/* Centered black column. Shorter than the two others. Will hold the p5.js canvas. */
+/* Centered light grey column. Shorter than the two others. Will hold the p5.js canvas. */
 #center
 {
   align-self: center;

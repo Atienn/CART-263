@@ -60,15 +60,13 @@ function setup()
     imgHolder = document.createElement('img');
     imgHolder.style = "visibility: hidden;"
 
+
     //Loading an image after assigning it a new source is asynchronous.
     imgHolder.onload = () => 
     {
         //Display the image on the canvas.
         currentImage = select("img");
         displayImage(currentImage);
-
-        //Stop rendering the html image.
-        imgHolder.src = "";
 
         //Now that the image has loaded, let other requests happen.
         imgLoading = false;
@@ -160,10 +158,11 @@ function showImage(tag)
 function displayImage(img)
 {
     background(220);
-    if( (img.width - width) > (img.height - height))
+    image(currentImage, width/2, height/2, width, img.height * (width/img.width));
+    /*if( (img.width - width) > (img.height - height))
     { image(currentImage, width/2, height/2, width, img.height * (width/img.width)); }
     else
-    { image(currentImage, width/2, height/2, img.width * (height/img.height), height); }
+    { image(currentImage, width/2, height/2, img.width * (height/img.height), height); }*/
 }
 
 
@@ -179,18 +178,6 @@ function outputText(text, duration = 3000)
     currentTimeout = setTimeout(() => { output.innerHTML = ""; }, duration)
 }
 
-
-/**
- * Resizes the canvas and redraws its content.
- * Is called automatically when the window is resized.
- */
-function windowResized()
-{
-    resizeCanvas(centerArea.clientWidth, centerArea.clientHeight);
-
-    //Redraw what was on canvas if an image was being displayed.
-    if(currentImage) { displayImage(currentImage); }
-}
 
 /**
  * Creates an event listener that will execute its callback function after an error is detected.
@@ -209,8 +196,6 @@ window.addEventListener('error', (errorEvent) =>
     {
         //Free the memory used by the requested info since it's not needed anymore.
         imgInfo = null;
-        //Don't bother displaying the image.
-        imgHolder.src = "";
 
         //Allow the other images to load.
         imgLoading = false;
@@ -221,3 +206,18 @@ window.addEventListener('error', (errorEvent) =>
         showImage(randomTag());
     }
 }, true);
+
+
+/**
+ * Resizes the canvas and redraws its content.
+ * Is called automatically when the window is resized.
+ */
+ function windowResized()
+ {
+     //Make the canvas match its parent width.
+     resizeCanvas(centerArea.clientWidth, centerArea.clientHeight);
+ 
+     //Redraw what was on canvas if an image was being displayed.
+     //Doesn't work, even if it
+     if(currentImage) { displayImage(currentImage); }
+ }
