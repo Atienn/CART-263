@@ -21,9 +21,10 @@ let canvas;
 
 //
 let currentImage;
-
 let currentTimeout = "";
 
+
+let currentTag; //For debugging.
 
 function preload()
 {
@@ -57,11 +58,7 @@ function setup()
 
     //Create an html holder for the image.
     imgHolder = document.createElement('img');
-    
-    //imgHolder.style = "visibility: hidden;"
-
-    //
-    document.body.appendChild(imgHolder);
+    imgHolder.style = "visibility: hidden;"
 
     //Loading an image after assigning it a new source is asynchronous.
     imgHolder.onload = () => 
@@ -76,6 +73,9 @@ function setup()
         //Now that the image has loaded, let other requests happen.
         imgLoading = false;
     }
+
+    //
+    document.body.appendChild(imgHolder);
 }
 
 
@@ -105,10 +105,11 @@ function randomElem(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 
 function showImage(tag)
 {
+    currentTag = tag;
     //End the function early if a another request is being made.
     if(imgLoading) 
     {
-        outputText('Image is still loading...')
+        outputText('Image is still loading...', 2000);
         return; 
     }
 
@@ -119,17 +120,17 @@ function showImage(tag)
     infoRequest = new XMLHttpRequest();
 
     //Get the json info from Flickr. Search for the info of 9 images with the specified tag.
-    infoRequest.open('GET', 'https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=bfa53076ee93e8d9dc477cb44589beb6&sort=relevant&per_page=9&format=json&tags=' + tag);
+    infoRequest.open('GET', 'https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=bfa53076ee93e8d9dc477cb44589beb6&sort=relevant&per_page=9&format=json&safe_search=1&tags=' + tag);
     //Specify how the response should be intepreted.
     infoRequest.responseType = 'text';
     
+
     //Specify callback function.
     infoRequest.onload = () => 
     {
         //Convert the fetched info into an object. 
         //The returned text always has "jsonFlickrApi()" encapsulating it, which is why we only care about the substring inside of it.
         let infoArr = JSON.parse(infoRequest.response.substring(14, infoRequest.response.length - 1)).photos;
-        //console.log(infoArr);
 
         //Select a random image from the returned array.
         do { imgInfo = infoArr.photo[Math.floor(Math.random() * infoArr.photo.length)]; }
@@ -190,3 +191,33 @@ function windowResized()
     //Redraw what was on canvas if an image was being displayed.
     if(currentImage) { displayImage(currentImage); }
 }
+
+/**
+ * Creates an event listener that will execute its callback function after an error is detected.
+ * For some reason, every time a request is made to Flickr, this event gets fired (independently the image loading properly or not).
+ * That said, this can be useful to check if the image has loaded properly.
+ * 
+ * This is the only method I found to work. The 'onerror' property of elements (including the XHTMLRequest or the window)
+ * don't get called by the new::ERR_NAME_NOT_RESOLVED error. The image's does, but it somehow leads to JSON or insuffucent resources
+ * errors down the line.
+ */
+window.addEventListener('error', (errorEvent) => 
+{
+    //If the HTML image's source still has the Flickr link, assume that something went wrong
+    //execute code to terminate the request and start another one.
+    if(errorEvent.target.src.includes('staticflickr.com'))
+    {
+        //Free the memory used by the requested info since it's not needed anymore.
+        imgInfo = null;
+        //Don't bother displaying the image.
+        imgHolder.src = "";
+
+        //Allow the other images to load.
+        imgLoading = false;
+
+        outputText('Image is unavaiable, retrying...');
+
+        //Display another image as replacement.
+        showImage(randomTag());
+    }
+}, true);
