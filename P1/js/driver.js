@@ -20,10 +20,6 @@ let currentTimeout = "";
 //For debugging.
 let currentTag; 
 
-function preload()
-{
-    imgTags = loadJSON("assets/data/tags.json", () => { imgTags.length = Object.keys(imgTags).length; });
-}
 
 function setup()
 {
@@ -77,9 +73,6 @@ function setup()
     document.body.appendChild(imgHolder);
 }
 
-/** @returns {String} A random tag from the imgTags array. */
-function randomTag() { return randomElem(randomElem(imgTags)); }
-
 
 /**
  * Displays text at the bottom of the screen for a set amount of time. 
@@ -98,14 +91,6 @@ function displayText(text, duration = 3000)
     //Set a timeout to clear the text and record its ID to potentially cancel it.
     currentTimeout = setTimeout(() => { output.innerHTML = ""; }, duration)
 }
-
-
-/**
- * Returns a random element from an array.
- * @param {Array} arr - Any type of array.
- * @returns A randomly picked element from the array.
- */
-function randomElem(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 
 
 /**
