@@ -1,6 +1,11 @@
 "use strict";
 
-let game = 
+//IMPORTANT
+//Refer to: assets/data/README.md for an explanation on the structure of the JSON 'tags' object.
+
+
+/** Object representation of the game the user plays. */
+let game =
 {
     /** The number of 'turns' (images ignored/deleted) the user has gone through. */
     turnCount: 0,
@@ -11,55 +16,55 @@ let game =
     /** The tags defining images that should be deleted. */
     tagsToCensor: [],
 
-    /**
-     * 
-     */
-    setup()
-    { 
-        //Greet the user and give a 'tutorial'.
+    /** Greets the user and gives them a small bit of instructions. */
+    setup() {
         alert("Welcome back, cleaner.");
         alert("There's more work to do.");
         alert("Just as a reminder: your task here is to filter out content.");
         alert("Use the buttons or voice commands, whichever you prefer.");
-        while(!confirm("Are you ready to start?")) { alert("..."); }
+        //Keep repeating '...' until the user accepts.
+        while (!confirm("Are you ready to start?")) { alert("..."); }
+        //Start the game.
         this.start();
     },
 
-    /**
-     * 
-     */
+    /** Resets values, gets new tags to censor and starts the game. */
     start() {
         //Reset the turn amount.
-        this.loopCount = 0;
+        this.turnCount = 0;
         //Reset the score.
         this.score = 0;
         //Clear the array of tags to censor. 
         this.tagsToCensor = [];
 
-        //Get a new random number (between 4 and 7) for the amount of tags.
+        //Get a new random number (between 4 and 7) for the amount of tags to censor.
         let count = Math.ceil(Math.random() * 4 + 3);
         //Define a temporary variable to aid in tag selection.
         let tempTag;
 
 
+        //Select an amount equal to 'count' different tags to censor.
+        for (let i = 0; i < count; i++) {
 
-        //Select 'count' different tags to censor.
-        for(let i = 0; i < count; i++) {
-
-            //Select a tag that is not already part of the array.
-            do { 
-                tempTag = randomElem(tags.concrete); 
+            //Select a new tag randomly from the concrete list.
+            do {
+                tempTag = randomElem(tags.concrete);
             }
-            while(this.tagsToCensor.includes(tempTag));
+            //Keep re-selecting until it's different from the others (no repetition).
+            while (this.tagsToCensor.includes(tempTag));
 
             //Add the selected tag to the array.
             this.tagsToCensor[i] = tempTag;
         }
 
+        //Create a string. 
         let list = "\n";
+        //Add every tag to censor to it, skipping a line each time.
         this.tagsToCensor.forEach(tag => {
             list += `\n - ${tag}`;
         });
+
+        //Display the tags to censor to the user.
         alert('Delete any image that contains or depicts any of the following.' + list);
 
         //Start the first prompt.
@@ -68,61 +73,66 @@ let game =
 
 
     /**
-     * 
+     * New turn. Gets a new image tag to search for and starts the request.
+     * Can call this.end() if the number of turns is exceeded.
      */
     nextPrompt() {
-        
-        //If the user has gone through 20 turns, then end the game (and end this method).
-        if(this.turnCount > 23) {
+
+        //If the user has gone through 23 turns, then end the game (and end this method).
+        //23 leads to messier (not round) percentages at the end. Looks more authentic.
+        if (this.turnCount > 3) {
             this.end();
             return;
         }
         //Otherwise, increase the number of turns.
         this.turnCount++;
 
+        //Create a temporary variable to aid the tag selection of the next image to be fetched.
         let imageTag;
-    
-        //Bias the chances of getting certain image tags as to make the experience more intersting.
-        if(Math.random() > 0.5)
-        {
+
+        //Bias the chances of getting certain image tags as to make the experience a bit more intersting.
+        //otherwise, the vast majority of correct verdicts are 'ignore'.
+        if (Math.random() > 0.5) {
             //25% of the time, choose an image that needs to be deleted. 
-            if(Math.random() > 0.5)
-            {
+            if (Math.random() > 0.5) {
                 imageTag = randomElem(this.tagsToCensor);
                 this.shouldDelete = true;
             }
             //25% of the time, display an image not to be deleted.
-            else
-            {
+            else {
                 imageTag = randomElem(tags.abstract);
                 this.shouldDelete = false;
             }
         }
         //50% of the time, choose an image that might (unlikely, with all possible choices) need to be deleted.
-        else 
-        {
+        else {
             //Pick a random tag from the whole concrete tag list.
-            imageTag = randomElem(tags.concrete); 
+            imageTag = randomElem(tags.concrete);
             //Check if the tag matches one of the list to be censored.
             this.shouldDelete = this.tagsToCensor.includes(imageTag);
         }
-    
-        //
+
+        //Fetch a new image with the given tag and display it.
         getNewImage(imageTag);
     },
 
-    end(){
-        //Draw light grey background over the last frame.
+    /** Display user rating and ask if they want to continue. */
+    end() {
+        //Draws a light grey background over the last canvas frame.
         background(220);
-        
-        //Display end messages.
+
+        //Display end message and rating (as a percentage with one decimal digit).
         alert("Alright, that's enough for now.");
-        alert(`You have a rating of ${(this.score*4).toFixed(1)}%`);
+        alert(`You have a rating of ${(this.score * (100 / 23)).toFixed(1)}%`);
 
-        //
-        if(confirm("Do you want to continue?"))
-        {
-
+        //Asks the user if they wish to continue.
+        //If they do, start another round.
+        if (confirm("Do you want to continue?")) {
+            this.start();
+        }
+        //If they don't, quit the page. Only work is allowed within these walls.
+        else {
+            quit();
         }
     },
 
@@ -133,20 +143,26 @@ let game =
      */
     userCall(command) {
         //If the command includes 'delete', take it as a delete command.
-        if(command.toLowerCase().includes("delete")){
+        if (command.toLowerCase().includes("delete")) {
+            //Verify if the user's guess was correct.
             this.verifyVerdict(true);
+            //Shortly display text at the bottom to confirm input.
             displayText('Deleting...', 1250);
+            //Start the next prompt.
             this.nextPrompt();
         }
         //Otherwise, if the command includes ignore, take it as an ignore command.
-        else if(command.toLowerCase().includes("ignore")){
+        else if (command.toLowerCase().includes("ignore")) {
+            //Verify if the user's guess was correct.
             this.verifyVerdict(false);
+            //Shortly display text at the bottom to confirm input.
             displayText('Ignored.', 1250);
+            //Start the next prompt.
             this.nextPrompt();
         }
         //Otherwise, display a fake error message.
-        else { 
-            displayText(`Unrecognized command: '${command}'`); 
+        else {
+            displayText(`Unrecognized command: '${command}'`);
         }
     },
 
@@ -156,16 +172,6 @@ let game =
      * @param {boolean} didDelete - If the user chose to delete the image.
      */
     verifyVerdict(didDelete) {
-        if(didDelete == this.shouldDelete) { this.score++; }
+        if (didDelete == this.shouldDelete) { this.score++; }
     }
-}
-
-
-/**
- * Returns a random element from an array.
- * @param {Array} array - Any type of array.
- * @returns A randomly picked element from the array.
- */
- function randomElem(array) { 
-    return array[Math.floor(Math.random() * array.length)]; 
 }

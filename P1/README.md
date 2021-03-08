@@ -15,6 +15,7 @@ The point of this project is simply to remind users that this kind of content mo
 To further hint at the connection, I made sure to model the whole interface after what actual ‘cleaners’ are shown to use within the documentary (see below).
 
 ![](assets/images/Interface.png)
+
 Interface used by content moderators as depicted in the documentary.
 
 ### Content
