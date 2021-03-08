@@ -8,9 +8,11 @@ This is a web game where the user must take on the role of a content moderator a
 "use strict"
 
 
-//HTML 'div' elements.
-let sideRight;
+//Represents a 'span' element where tags can be listed.
+let tagList;
+//Center 'div', holds the canvas.
 let centerArea;
+//Invisible 'footer' at the bottom of the page. Is used to display messages back to the user. 
 let output;
 
 //Tracks the ID of ongoing timeout functions. Used to cancel them before they execute.
@@ -36,7 +38,7 @@ function preload() {
 function setup() {
     //Get the reference of HTML elements.
     centerArea = document.getElementById("center");
-    sideRight = document.getElementById("right");
+    tagList = document.getElementById("tag-list");
     output = document.getElementById("output");
 
     //Create canvas and make it fit within the center area.

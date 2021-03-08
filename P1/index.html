@@ -26,9 +26,15 @@
   <div id=col>
     <header id="top"></header>
     <div id="row">
-      <div id="left" class="side"></div>
+      <div class="side" style="margin-right: 10px;">
+        <div id="left-content">
+          <span style="font-size: 125%;">TO DELETE</span><hr/>
+          <!-- Game script write in here. -->
+          <span id="tag-list"></span>
+        </div>
+      </div>
       <div id="center"></div>
-      <div id="right" class="side">
+      <div class="side" style="margin-left: 10px;">
         <button type="button" class="green-button" onclick="game.userCall('ignore');"><b>ignore</b></button>
         <button type="button" class="red-button" onclick="game.userCall('delete');"><b>delete</b></button>
       </div>

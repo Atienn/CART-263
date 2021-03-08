@@ -37,10 +37,15 @@ let game =
         //Clear the array of tags to censor. 
         this.tagsToCensor = [];
 
-        //Get a new random number (between 4 and 7) for the amount of tags to censor.
-        let count = Math.ceil(Math.random() * 4 + 3);
+
+        //Get a new random number (between 5 and 7) for the amount of tags to censor.
+        let count = Math.ceil(Math.random() * 3 + 4);
         //Define a temporary variable to aid in tag selection.
         let tempTag;
+        //Create a string to act as a list.
+        let list = "";
+        //Remove all current tags listed on the left column.
+        tagList.innerHTML = "";
 
 
         //Select an amount equal to 'count' different tags to censor.
@@ -55,17 +60,15 @@ let game =
 
             //Add the selected tag to the array.
             this.tagsToCensor[i] = tempTag;
+
+            //Add the tag to censor the list, skipping a line each time.
+            list += `\n - ${tempTag}`;
+            //Add the tag to the list on the left side column.
+            tagList.innerHTML += ` - ${tempTag}<br/>`;
         }
 
-        //Create a string. 
-        let list = "\n";
-        //Add every tag to censor to it, skipping a line each time.
-        this.tagsToCensor.forEach(tag => {
-            list += `\n - ${tag}`;
-        });
-
-        //Display the tags to censor to the user.
-        alert('Delete any image that contains or depicts any of the following.' + list);
+        //Display the list of tags to censor to the user.
+        alert('Delete any image that contains or depicts any of the following:' + list);
 
         //Start the first prompt.
         this.nextPrompt();
@@ -80,7 +83,7 @@ let game =
 
         //If the user has gone through 23 turns, then end the game (and end this method).
         //23 leads to messier (not round) percentages at the end. Looks more authentic.
-        if (this.turnCount > 3) {
+        if (this.turnCount > 23) {
             this.end();
             return;
         }
