@@ -1,4 +1,3 @@
 # Images folder
 
-This folder holds all images used in the project.
-
+The image here isn't used in the project itself. It's used as an example within the [main README](../../README.md).
