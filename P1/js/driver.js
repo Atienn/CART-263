@@ -13,64 +13,70 @@ let centerArea;
 let canvas;
 let output;
 
-
 //
 let currentTimeout = "";
 
 //For debugging.
 let currentTag; 
 
+//Represents all of the possible image tags.
+let tags;
+
+/**
+ * 
+ */
+ function preload() { 
+    tags = loadJSON("assets/data/tags.json", () => { tags.length = Object.keys(tags).length; }); 
+}
 
 function setup()
 {
-    //Only attempt to start annyang if it is present.
-    if(annyang)
-    {
-        //Makes annyang call 'userCall' with parameter command when it recognizes speech.
-        annyang.addCommands({ '*command': userCall });
-        //Stars listening for voice input.
-        annyang.start();
-    }
-
     //Get the reference of HTML elements.
     centerArea = document.getElementById("center");
     sideRight = document.getElementById("right");
     output = document.getElementById("output");
     
-
     //Create canvas and make it fit within the center area.
     canvas = createCanvas(centerArea.clientWidth, centerArea.clientHeight);
     canvas.parent(centerArea);
 
-    //Draw images from the center.
-    imageMode(CENTER);
-    
-    //Set the text style.
-    textSize(25);
-    textStyle(BOLD);
-    textAlign(CENTER);
-    textFont('Courier New');
+    //Setup imageHandler.js
+    imageSetup();
+    //Setup game object.
+    game.setup();
 
-
-    //Create an html holder for the image, but prevent it from rendering.
-    imgHolder = document.createElement('img');
-    imgHolder.style = "visibility: hidden;"
-
-
-    //Loading an image after assigning it a new source is asynchronous.
-    imgHolder.onload = () => 
+    //Only attempt to start annyang if it is present.
+    if(annyang)
     {
-        //Display the image on the canvas.
-        currentImage = select("img");
-        displayImage(currentImage);
-
-        //Now that the image has loaded, let other requests happen.
-        imgLoading = false;
+        //Makes annyang call 'userCall' with parameter command when it recognizes speech.
+        annyang.addCommands({ '*command': game.userCall });
+        //Stars listening for voice input.
+        annyang.start();
     }
+}
 
-    //Include the image in the html body. 
-    //(It doesn't matter too much where it will be, since it's invisible).
-    document.body.appendChild(imgHolder);
+
+ /**
+ * Draws a new image onto the canvas without modifying its aspect ratio.
+ * Ensures that no part of the image gets cropped.
+ * @param {Image} img The image to display.
+ */
+function displayImage(img)
+{
+    //Draws a light grey background over the last canvas frame.
+    background(220);
+
+    //The following calculates which dimension of the image can be set to match the 
+    //canvas' width/height without overflow (the 'limiting' dimension).
+
+    //In both cases the image is drawn from the center, and the non-limiting dimension is scaled 
+    //by the same amount the limiting one is as to conserve the image's aspect ratio.
+    
+    //If the width is the limiting dimension, then set it to match the canvas' (as large as possible).
+    if((img.width - width) * img.height > (img.height - height) * img.width)
+    { image(img, width/2, height/2, width, img.height * (width/img.width)); }
+    //Otherwise, set the height to match the canvas'.
+    else { image(img, width/2, height/2, img.width * (height/img.height), height); }
 }
 
 

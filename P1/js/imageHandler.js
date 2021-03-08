@@ -10,6 +10,41 @@ let infoRequest;
 let currentImage;
 
 
+/** Performs setup operations related to image & display. */
+function imageSetup()
+{
+    //Draw images from the center.
+    imageMode(CENTER);
+
+    //Set the text style.
+    textSize(25);
+    textStyle(BOLD);
+    textAlign(CENTER);
+    textFont('Courier New');
+
+
+    //Create an html holder for the image, but prevent it from rendering.
+    imgHolder = document.createElement('img');
+    imgHolder.style = "visibility: hidden;"
+
+
+    //Loading an image after assigning it a new source is asynchronous.
+    imgHolder.onload = () => 
+    {
+        //Display the image on the canvas.
+        currentImage = select("img");
+        displayImage(currentImage);
+
+        //Now that the image has loaded, let other requests happen.
+        imgLoading = false;
+    }
+
+    //Include the image in the html body. 
+    //(It doesn't matter too much where it will be, since it's invisible).
+    document.body.appendChild(imgHolder);
+}
+
+
 /**
  * Fetches a new image from the Flickr image database and log its URL into the HTML image.
  * This triggers the imgHolder's 'onload' callback, which displays the image onto the canvas.
@@ -69,30 +104,6 @@ function getNewImage(tag)
 
 
  /**
- * Draws a new image onto the canvas without modifying its aspect ratio.
- * Ensures that no part of the image gets cropped.
- * @param {Image} img The image to display.
- */
-function displayImage(img)
-{
-    //Draws a light grey background over the last canvas frame.
-    background(220);
-
-    //The following calculates which dimension of the image can be set to match the 
-    //canvas' width/height without overflow (the 'limiting' dimension).
-
-    //In both cases the image is drawn from the center, and the non-limiting dimension is scaled 
-    //by the same amount the limiting one is as to conserve the image's aspect ratio.
-    
-    //If the width is the limiting dimension, then set it to match the canvas' (as large as possible).
-    if((img.width - width) * img.height > (img.height - height) * img.width)
-    { image(img, width/2, height/2, width, img.height * (width/img.width)); }
-    //Otherwise, set the height to match the canvas'.
-    else { image(img, width/2, height/2, img.width * (height/img.height), height); }
-}
-
-
- /**
  * Creates an event listener that will execute its callback function after an error is detected.
  * For some reason, every time a request is made to Flickr, this event gets fired (independently the image loading properly or not).
  * That said, this can be useful to check if the image has loaded properly. 
@@ -117,6 +128,6 @@ window.addEventListener('error', (errorEvent) =>
         displayText('Image is unavaiable, retrying...');
 
         //Display another image as replacement.
-        newImagePrompt();
+        game.nextPrompt();
     }
 }, true);
