@@ -23,7 +23,7 @@ body
   font-weight: bolder;
 }
 
-.text
+p
 {
   /* Makes the paragraph elements easier to click on. */
   padding: 10px;
@@ -33,7 +33,7 @@ body
 }
 
 /* Dims the color of the text when hovering over it. */
-.text:hover
+text:hover
 {
   color: #c8c8c8;
 }
