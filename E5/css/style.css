@@ -1,16 +1,33 @@
 body 
 {
   /* Make the body take up the entire screen and center its content. */
-  height: 100%;
-  width:  100%;
+  width:  100vw;
+  height: 100vh;
 
   display: grid;
   justify-content: center;
   align-content: center;
+  vertical-align: middle;
+
 
   /*Prevents scrollbars from appearing.*/
   overflow: hidden;
   
+  /* Makes the text color white. */
+  color: black;
   /* Makes the page background black.*/
-  background-color: black;
+  background-color: white;
+
+  font-family: monospace;
+  font-size: 2vw;
+  font-weight: bolder;
+}
+
+p
+{
+  /* Makes the paragraph elements easier to click on. */
+  padding: 10px;
+
+  /* Prevent the user from being able to highlight text. */
+  user-select: none;
 }
