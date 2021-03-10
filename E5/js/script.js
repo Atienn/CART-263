@@ -9,6 +9,8 @@ In development.
 //Write text in the center while the page loads.
 document.write('<p id="load">LOADING...</p>');
 
+//The 
+let title;
 //The array of lines.
 let lines = [];
 
@@ -18,25 +20,48 @@ window.onload = () => {
     //Remove the loading text.
     document.getElementById('load').remove();
 
+
+    //Create a header element with class 'text'.
+    title = document.createElement("h2");
+    title.className = "text";
+
+    //Initialize the opacity value (default is "").
+    title.style[`opacity`] = 1;
+    
+    //Call the fade function if clicked on. The target value will always be set
+        //to the opposite of the current one. (0 -> 1 / 1 -> 0)
+    title.addEventListener("click", (event) => {
+        fade(event.target, event.target.style[`opacity`] == "1" ? 0 : 1);
+    });
+
+    //Write text.
+    title.innerHTML = 'Title';
+    //Add the title to the document.
+    document.body.append(title);
+
+
     //Create three lines, add them to the body (breaking with each new line).
     for(let i = 0; i < 3; i++) {
-        //Create a new paragraph element with set opacity of 1 (default is "").
+        //Create a new paragraph element with class 'text'.
         lines[i] = document.createElement("p");
-        lines[i].style[`opacity`] = 1;
+        lines[i].className = "text";
 
-        //Write text.
-        lines[i].innerHTML = i;
+        //Initialize the opacity value (default is "").
+        lines[i].style[`opacity`] = 1;
 
         //Call the fade function if clicked on. The target value will always be set
         //to the opposite of the current one. (0 -> 1 / 1 -> 0)
         lines[i].addEventListener("click", (event) => {
-            fade(event.target, (event.target.style[`opacity`] == "1") ? 0 : 1);
+            fade(event.target, event.target.style[`opacity`] == "1" ? 0 : 1);
         });
 
+        //Write text.
+        lines[i].innerHTML = i;
         //Add the paragraph element to the body.
         document.body.append(lines[i]);
     }
 }
+
 
 /**
  * Fades an element in/out by shifting their opacity value.
@@ -48,23 +73,23 @@ function fade(element, target, rate = 0.05) {
 
     //Before doing anything, check if the opacity is the same as the target.
     //If it is, end the function immediately.
-    if(element.style[`opacity`] == target) { log('equals'); return; }
+    if(element.style[`opacity`] == target) { return; }
 
     //Get a number value for the opacity.
     let opacity = Number(element.style[`opacity`]);
 
     //Check if the opacity value must go up or down.
-    let targetIsLarger = target > Number(element.style[`opacity`]);
+    let targetIsLarger = target > opacity;
 
     //Move the opacity value towards 'target'.
     element.style[`opacity`] = opacity + (targetIsLarger ? rate : -rate);
 
-    //Check if the target value has been overshot.
-    if ((targetIsLarger && opacity > target) || (!targetIsLarger && opacity < target)) {
-        //If it has, go back to it and stop fading.
-        element.style[`opacity`] = target.toString();
-    }
     //Check if the opacity value is different from the target.
+    if ((targetIsLarger && element.style[`opacity`] > target) || (!targetIsLarger && element.style[`opacity`] < target)) {
+        //If it has, go back to it and stop fading.
+        element.style[`opacity`] = `${target}`;
+    }
+    //Check if the target value has been overshot.
     else {
         //If it is, then call this function again next animation frame.
         requestAnimationFrame(() => {
@@ -72,6 +97,7 @@ function fade(element, target, rate = 0.05) {
         });
     }
 }
+
 
 /**
  * Returns a random element from an array.

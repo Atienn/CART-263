@@ -14,20 +14,26 @@ body
   overflow: hidden;
   
   /* Makes the text color white. */
-  color: black;
+  color: white;
   /* Makes the page background black.*/
-  background-color: white;
+  background-color: black;
 
   font-family: monospace;
   font-size: 2vw;
   font-weight: bolder;
 }
 
-p
+.text
 {
   /* Makes the paragraph elements easier to click on. */
   padding: 10px;
 
   /* Prevent the user from being able to highlight text. */
   user-select: none;
+}
+
+/* Dims the color of the text when hovering over it. */
+.text:hover
+{
+  color: #c8c8c8;
 }
