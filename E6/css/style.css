@@ -1,0 +1,15 @@
+body 
+{
+  /* Centers text. */
+  padding: 50px;
+
+  /* Makes the text color white. */
+  color: white;
+  /* Makes the page background black.*/
+  background-color: black;
+
+  /* Uses the browser's monospace font. */
+  font-family: monospace;
+  font-size: 18px;
+  font-weight: bolder;
+}
