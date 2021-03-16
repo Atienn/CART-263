@@ -9,8 +9,12 @@ Exercise 6
 //Write text in the center while the page loads.
 document.write('<p id="load">LOADING...</p>');
 
+
 //Each paragraph on the page.
 let paragraphs = [];
+
+//Each span to censor.
+let spans = [false, false, false];
 
 
 //Specifies a callback function to call once the whole window has loaded (works just like p5 setup()).
@@ -122,7 +126,7 @@ function getWikipedia(element) {
         if(content) {
             //Give the page title, id and summary (with native html tags) to the element. 
             element.innerHTML = 
-            `<h4>File: ${data.title}<br/>
+            `<h4>File: <a href=${data.content_urls.desktop.page}>${data.title}</a><br/>
                 ID: ${data.pageid}</h4>
                 ${content}<br/>`;
         }
@@ -152,8 +156,9 @@ function addCensorSpan(text) {
         //Get a random index in the sentences array.
         let randIndex = Math.floor(Math.random() * sentences.length);
 
-        //Add a span element around the selected sentence.
-        sentences[randIndex] = `<span class="censor">${sentences[randIndex]}</span>`;
+        //Add a span element around the selected sentence along with the events needed.
+        sentences[randIndex] = `<span class="censor" onmouseover="dim();" onmouseout="light()" onclick="getNewPage();">
+        ${sentences[randIndex]}</span>`;
 
         //Reset the text.
         text = '';
@@ -167,8 +172,27 @@ function addCensorSpan(text) {
         return text;
     }
     //If there's no sentence array, return false.
-    else return false;
+    else{
+        return false;
+    }
 }
+
+//#region EVENTS
+
+/** Gets a new wikipedia summary to display in the parent paragraph. */
+function getNewPage() {
+    getWikipedia(event.target.parentElement);
+}
+/** Light up the span background when the mouse leaves the element. */
+function light() {
+    $(event.target).css('background-color', '#4f4f4f')
+}
+/** Dim the span background when the mouse hovers over the element. */
+function dim(){
+    $(event.target).css('background-color', '#404040')
+}
+
+//#endregion
 
 
 /**
