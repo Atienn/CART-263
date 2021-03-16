@@ -13,14 +13,19 @@ document.write('<p id="load">LOADING...</p>');
 let paragraphs = [];
 
 
-
 //Specifies a callback function to call once the whole window has loaded (works just like p5 setup()).
 window.onload = () => {
 
     //Remove the loading text.
-    document.getElementById('load').remove();
+    $(`#load`).remove();
 
+    //Gets each paragraph element.
+    paragraphs = $(`p`);
 
+    //Give each paragraph a page's description.
+    paragraphs.each(function() {
+        getWikipedia(this);
+    });
 }
 
 
@@ -92,28 +97,77 @@ function alterText(element) {
 
 
 /**
- * 
+ * Assigns a random wikipedia page's summary and assigns it to an element's text.
  */
 function getWikipedia(element) {
 
+    //Mark the text as loading.
     element.innerHTML = `Loading...`;
 
-    //Create a new object to interact with the server
+    //Create a new XHTML request.
     let request = new XMLHttpRequest();
+    //Set a GET request to the wikipedia REST API.
+    request.open('GET', "https://en.wikipedia.org/api/rest_v1/page/random/summary");
 
-    // Provide 3 arguments (GET/POST, The URL, Async True/False)
-    request.open('GET', "https://en.wikipedia.org/api/rest_v1/page/random/summary", true);
-
-    // Once request has loaded...
+    //Set a callback for once the request has loaded.
     request.onload = () => {
 
+        //Turn the response into a js object.
         let data = JSON.parse(request.response);
-        //Give the 'extract' property (the wikipedia page's content) to the element.
-        element.innerHTML = `<h4>File: ${data.title}<br/>ID: ${data.pageid}</h4>${data.extract_html}<br/>`;
+
+        //Add a 'censor' span around a random sentence.
+        let content = addCensorSpan(data.extract);
+
+        //If adding a span was successful, display the text.
+        if(content) {
+            //Give the page title, id and summary (with native html tags) to the element. 
+            element.innerHTML = 
+            `<h4>File: ${data.title}<br/>
+                ID: ${data.pageid}</h4>
+                ${content}<br/>`;
+        }
+        //If it wasn't get a new wikipedia page.
+        else {
+            log('Retrying...');
+            //Get a new wikipedia page summary.
+            getWikipedia(element); 
+        }
     }
 
     //Send the XHTML request to the Wikipedia servers.
     request.send();
+}
+
+
+/**
+ * Puts a span element of class 'censor' around a sentence of the given text.
+ */
+function addCensorSpan(text) {
+    //Find each sequence with 1 or more characters that aren't 
+    //sentence enders (., !, ?) followed by a sentence ender.
+    let sentences = text.match(/[^\.\!\?]+[\.\!\?]/g);
+    
+    //Only try to manipulate the array if it exists.
+    if(sentences) {
+        //Get a random index in the sentences array.
+        let randIndex = Math.floor(Math.random() * sentences.length);
+
+        //Add a span element around the selected sentence.
+        sentences[randIndex] = `<span class="censor">${sentences[randIndex]}</span>`;
+
+        //Reset the text.
+        text = '';
+
+        //Reconstruct the text by adding each sentence back.
+        for(let i = 0; i < sentences.length; i++) {
+            text += sentences[i];
+        }
+
+        //Return the new text.
+        return text;
+    }
+    //If there's no sentence array, return false.
+    else return false;
 }
 
 

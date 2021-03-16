@@ -25,3 +25,18 @@ p
   margin-left: 30px;
   font-size: 90%;
 }
+
+/* Make selected text the inverse of regular content. */
+::selection{
+  color: black;
+  background-color: white;
+}
+/* Same as above, but for Firefox. */
+::-moz-selection {
+  color: black;
+  background-color: white;
+}
+
+.censor{
+  background-color: #4f4f4f;
+}
