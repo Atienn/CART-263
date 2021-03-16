@@ -92,11 +92,37 @@ function alterText(element) {
 
 
 /**
+ * 
+ */
+function getWikipedia(element) {
+
+    element.innerHTML = `Loading...`;
+
+    //Create a new object to interact with the server
+    let request = new XMLHttpRequest();
+
+    // Provide 3 arguments (GET/POST, The URL, Async True/False)
+    request.open('GET', "https://en.wikipedia.org/api/rest_v1/page/random/summary", true);
+
+    // Once request has loaded...
+    request.onload = () => {
+
+        let data = JSON.parse(request.response);
+        //Give the 'extract' property (the wikipedia page's content) to the element.
+        element.innerHTML = `<h4>File: ${data.title}<br/>ID: ${data.pageid}</h4>${data.extract_html}<br/>`;
+    }
+
+    //Send the XHTML request to the Wikipedia servers.
+    request.send();
+}
+
+
+/**
  * I'm tired of having to write 'console.log' in its entirety.
  * Prints all arguments to console.
  * @param {Any} arg - Arguments to print.
  */
-function log() {
+ function log() {
     for(var args in arguments) { 
         console.log(arguments[args]);
     }
