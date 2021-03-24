@@ -9,7 +9,9 @@
   <title>...</title>
 
   <!-- jQuery stylesheets -->
-  <link rel="stylesheet" type="text/css" href="css/jquery-ui.min.css"/>
+  <link href="css/jquery-ui.min.css" type="text/css" rel="stylesheet">
+  <link href="css/style.css" type="text/css" rel="stylesheet">
+
 
   <!-- jQuery scripts -->
   <script src="js/jQuery/jquery-3.6.0.min.js"></script>
@@ -20,7 +22,43 @@
 </head>
 
 <body>
+  <p>
+    <span class="number">48</span>
+    <span class="number">17</span>
+    <span class="number">5</span>
+    <span class="number">1</span>
+    <span class="number">56</span>
+    <span class="number">90</span>
+    <span class="number">13</span>
+    <span class="number">75</span>
+    <span class="number">55</span>
+    <span class="number">70</span>
+    <span class="number">93</span>
+    <span class="number">41</span>
+    <span class="number">26</span>
+    <span class="number">63</span>
+    <span class="number">39</span>
+  </p>
 
+    <div id="drag-box" style="width: 465px; height: 100px;">
+
+    </div>
+
+    <form style="margin-top: 1em;">
+      <div id="radioset" role="toolbar" class="ui-controlgroup ui-controlgroup-horizontal ui-helper-clearfix">
+        <input type="radio" id="radio1" name="radio" class="ui-checkboxradio"><label for="radio1" class="ui-button ui-widget ui-checkboxradio-radio-label ui-controlgroup-item"><span class="ui-checkboxradio-icon-space"> </span>=</label>
+        <input type="radio" id="radio2" name="radio" class="ui-checkboxradio"><label for="radio2" class="ui-button ui-widget ui-checkboxradio-radio-label ui-controlgroup-item"><span class="ui-checkboxradio-icon-space"> </span>+</label>
+        <input type="radio" id="radio3" name="radio" class="ui-checkboxradio"><label for="radio3" class="ui-button ui-widget ui-checkboxradio-radio-label ui-controlgroup-item"><span class="ui-checkboxradio-icon-space"> </span>-</label>
+        <input type="radio" id="radio4" name="radio" class="ui-checkboxradio"><label for="radio4" class="ui-button ui-widget ui-checkboxradio-radio-label ui-controlgroup-item"><span class="ui-checkboxradio-icon-space"> </span>×</label>
+        <input type="radio" id="radio5" name="radio" class="ui-checkboxradio"><label for="radio5" class="ui-button ui-widget ui-checkboxradio-radio-label ui-controlgroup-item"><span class="ui-checkboxradio-icon-space"> </span>÷</label>
+      </div>
+    </form>
+  
+  <div id="end-popup" title=">:(">
+    <p>
+      Anger
+    </p>
+  </div>
 </body>
 
 </html>

@@ -1,0 +1,41 @@
+body 
+{
+  margin: 35px;
+
+  /* Makes the text color white. */
+  color: white;
+  /* Makes the page background black.*/
+  background-color: black;
+
+  /* Uses the browser's monospace font. */
+  font-family: monospace;
+  font-size: 22px;
+  font-weight: 400;
+}
+
+/* Reduces the space from the top of the page to the header. */
+h1 { margin-top: 0px; }
+
+/* Reduces the space from the bottom of the paragraph header to its body. */
+h4 { margin-bottom: 10px; }
+
+#drag-box 
+{
+  background-color: #404040;
+
+  font-size: 30px;
+
+  vertical-align: baseline;
+  text-align: center;
+}
+
+/* Make selected text the inverse of regular content. */
+::selection{
+  color: black;
+  background-color: white;
+}
+/* Same as above, but for Firefox. */
+::-moz-selection {
+  color: black;
+  background-color: white;
+}
