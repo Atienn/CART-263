@@ -22,42 +22,49 @@
 </head>
 
 <body>
-  <p>
+  <!-- Title. -->
+  <h2>Drag & drop calculator</h2>
+  <br/>
+
+  <!-- Possible numbers to select -->
+  <p style="width: 465px">
     <span class="number">48</span>
     <span class="number">17</span>
-    <span class="number">5</span>
+    <span class="number">62</span>
     <span class="number">1</span>
     <span class="number">56</span>
     <span class="number">90</span>
+    <span class="number">45</span>
     <span class="number">13</span>
     <span class="number">75</span>
     <span class="number">55</span>
     <span class="number">70</span>
     <span class="number">93</span>
     <span class="number">41</span>
+    <span class="number">5</span>
     <span class="number">26</span>
     <span class="number">63</span>
     <span class="number">39</span>
+    <span class="number">29</span>
+    <span class="number">84</span>
+    <span class="number">32</span>
   </p>
 
-    <div id="drag-box" style="width: 465px; height: 100px;">
-
-    </div>
-
-    <form style="margin-top: 1em;">
-      <div id="radioset" role="toolbar" class="ui-controlgroup ui-controlgroup-horizontal ui-helper-clearfix">
-        <input type="radio" id="radio1" name="radio" class="ui-checkboxradio"><label for="radio1" class="ui-button ui-widget ui-checkboxradio-radio-label ui-controlgroup-item"><span class="ui-checkboxradio-icon-space"> </span>=</label>
-        <input type="radio" id="radio2" name="radio" class="ui-checkboxradio"><label for="radio2" class="ui-button ui-widget ui-checkboxradio-radio-label ui-controlgroup-item"><span class="ui-checkboxradio-icon-space"> </span>+</label>
-        <input type="radio" id="radio3" name="radio" class="ui-checkboxradio"><label for="radio3" class="ui-button ui-widget ui-checkboxradio-radio-label ui-controlgroup-item"><span class="ui-checkboxradio-icon-space"> </span>-</label>
-        <input type="radio" id="radio4" name="radio" class="ui-checkboxradio"><label for="radio4" class="ui-button ui-widget ui-checkboxradio-radio-label ui-controlgroup-item"><span class="ui-checkboxradio-icon-space"> </span>×</label>
-        <input type="radio" id="radio5" name="radio" class="ui-checkboxradio"><label for="radio5" class="ui-button ui-widget ui-checkboxradio-radio-label ui-controlgroup-item"><span class="ui-checkboxradio-icon-space"> </span>÷</label>
-      </div>
-    </form>
+  <!-- Box where numbers can be dragged to do calculations. -->
+  <div id="drag-box">0</div>
   
-  <div id="end-popup" title=">:(">
-    <p>
-      Anger
-    </p>
+  <!-- Radio buttons to choose the operation to perform. -->
+  <div id="radioset" role="toolbar" class="ui-controlgroup ui-controlgroup-horizontal ui-helper-clearfix">
+    <input type="radio" value="set" checked="checked" id="o1" name="operation" class="ui-checkboxradio"><label for="o1" class="ui-button ui-widget ui-checkboxradio-radio-label ui-controlgroup-item"><span class="ui-checkboxradio-icon-space"> </span>=</label>
+    <input type="radio" value="add" id="o2" name="operation" class="ui-checkboxradio"><label for="o2" class="ui-button ui-widget ui-checkboxradio-radio-label ui-controlgroup-item"><span class="ui-checkboxradio-icon-space"> </span>+</label>
+    <input type="radio" value="sub" id="o3" name="operation" class="ui-checkboxradio"><label for="o3" class="ui-button ui-widget ui-checkboxradio-radio-label ui-controlgroup-item"><span class="ui-checkboxradio-icon-space"> </span>-</label>
+    <input type="radio" value="mul" id="o4" name="operation" class="ui-checkboxradio"><label for="o4" class="ui-button ui-widget ui-checkboxradio-radio-label ui-controlgroup-item"><span class="ui-checkboxradio-icon-space"> </span>×</label>
+    <input type="radio" value="div" id="o5" name="operation" class="ui-checkboxradio"><label for="o5" class="ui-button ui-widget ui-checkboxradio-radio-label ui-controlgroup-item"><span class="ui-checkboxradio-icon-space"> </span>÷</label>
+  </div>
+  
+  <!-- End popup. -->
+  <div id="end-popup" title="Well...">
+    <p>That's it for now.</p>
   </div>
 </body>
 

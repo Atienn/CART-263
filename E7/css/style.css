@@ -21,13 +21,19 @@ h4 { margin-bottom: 10px; }
 
 #drag-box 
 {
+  width: 465px;
+  height: 100px;
+
+  margin-bottom: 10px;
+
   background-color: #404040;
 
   font-size: 30px;
-
-  vertical-align: baseline;
   text-align: center;
+  line-height: 100px;
 }
+
+.number { padding: 5px; }
 
 /* Make selected text the inverse of regular content. */
 ::selection{

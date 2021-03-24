@@ -6,37 +6,42 @@ Exercise 7
 
 "use strict";
 
+
+//#region OPERATIONS
+//Each numerical operation that can take place.
+//Returns the number to be set as the result.
+
 function set(num1, num2) {
-    return num1;
+    return num2;
 }
 
 function add(num1, num2) {
     return num1 + num2;
 }
 
-function subtract(num1, num2) {
+function sub(num1, num2) {
     return num1 - num2;
 }
 
-function multiply(num1, num2) {
+function mul(num1, num2) {
     return num1 * num2;
 }
 
-function divide(num1, num2) {
+function div(num1, num2) {
     return num1 / num2;
 }
 
+let currOperation = set;
 
-let currentOperation = add;
+//#endregion
 
 
 window.onload = () => {
 
-
     $(`#end-popup`).dialog({
         autoOpen: false,
         buttons: {
-            "Reset?": function() {
+            "Reset": function() {
                 location.reload();
             }
         }
@@ -44,22 +49,21 @@ window.onload = () => {
      
     $(`#radioset`).buttonset();
 
+    $(`#radioset`).on(`change`, function() {
+        currOperation =  window[$("input[name='operation']:checked").val()];
+
+    });
+
     $(`.number`).draggable();
 
-    $(`#drag-box`).text(0);
     $(`#drag-box`).droppable({
         drop: function(event, ui) {
-            $(this).text(currentOperation(Number.parseInt($(this).text()), Number.parseInt(ui.draggable.text())));
+            $(this).text(currOperation(Number.parseInt($(this).text()), Number.parseInt(ui.draggable.text())));
             ui.draggable.remove();
+            
+            if($(`.number`).length == 0) {
+                $(`#end-popup`).dialog(`open`);
+            }
         }
     });
 }
-
-
-// Let the user drag secret letters via a clone helper
-
-
-// When the user drops a letter on the answer...
-
-
-
