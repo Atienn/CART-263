@@ -13,12 +13,7 @@ body
   font-weight: 400;
 }
 
-/* Reduces the space from the top of the page to the header. */
-h1 { margin-top: 0px; }
-
-/* Reduces the space from the bottom of the paragraph header to its body. */
-h4 { margin-bottom: 10px; }
-
+/* Make the box to drag numbers into distict from the background and center its text. */ 
 #drag-box 
 {
   width: 465px;
@@ -33,6 +28,7 @@ h4 { margin-bottom: 10px; }
   line-height: 100px;
 }
 
+/* Make the numbers a bit easier to click on. */
 .number { padding: 5px; }
 
 /* Make selected text the inverse of regular content. */
