@@ -415,6 +415,27 @@ let Player =
         //Resets the velAdd vector for the next frame.
         this.velAdd = Vector2D.Zero();
     },
+
+    /**
+     * Draw the player character as a black circle with a white outline whose thickness 'beats' with the music.
+     */
+    display() {
+
+        push(); //We don't want to keep these drawing settings.
+
+        //Makes the stroke white, its thickness dependent on the amplitude level.
+        strokeWeight(2 + ampCurrent * 5);
+        stroke(100);
+
+        //Make the player circle's fill dependent on the dash cooldown. Also add 40 to the brightness
+        //if the dashTimer is over 0 to have a more noticeable switch when the dash is avaiable again.
+        fill(0 + 2 * Player.dashTimer + 40 * (Player.dashTimer > 0));
+
+        //Draw the player circle around the center of the screen (affected by the camera offset).
+        circle((width / 2) - camOffset.x, (height / 1.5) - camOffset.y, 20, 20);
+        //Revert to the previous drawing settings.
+        pop();
+    }
 }
 
 //#endregion
