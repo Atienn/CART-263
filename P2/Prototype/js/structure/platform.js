@@ -174,7 +174,29 @@ class Platform
     //In order to prevent some tunneling (passing through walls) bug, the platforms
     //are made slightly longer.
 
+
+    //TEST LEVEL
+    
+    static allG = [
+        new Platform(1100, 175, 1025, false),
+        new Platform(900, 1000, 1525, false)
+    ]
+    static allC = [
+        new Platform(400, 175, 1525, false)
+    ]
+    static allL = [
+        new Platform(200, 375, 1125, true)
+    ]
+    static allR = [
+        new Platform(1000, 900, 1125, true),
+        new Platform(1500, 375, 925, true)
+    ]
+
+
+    //LEVEL 1
+
     /** Holds all ground platforms. */
+    /*
     static allG = 
     [
         new Platform(1600, 25, 1025, false),
@@ -186,9 +208,10 @@ class Platform
         new Platform(900, 75, 1000, false),
         new Platform(300, 225, 325, false),
         new Platform(300, 900, 1800, false)
-    ];
+    ];*/
 
     /** Holds all ceiling platforms. */
+    /*
     static allC = 
     [
         new Platform(1100, 25, 1525, false),
@@ -196,9 +219,10 @@ class Platform
         new Platform(800, 1150, 1275, false),
         new Platform(50, 75, 1800, false),
         new Platform(675, 225, 325, false)
-    ];
+    ];*/
 
     /** Holds all left walls. */
+    /*
     static allL = 
     [
         new Platform(50, 1075, 1625, true),
@@ -209,9 +233,10 @@ class Platform
         new Platform(1000, 900, 1025, true),
         new Platform(100, 25, 925, true),
         new Platform(325, 300, 675, true)
-    ];
+    ];*/
 
     /** Holds all right walls. */
+    /*
     static allR = 
     [
         new Platform(350, 1450, 1625, true),
@@ -222,7 +247,7 @@ class Platform
         new Platform(225, 300, 675, true),
         new Platform(900, 300, 400, true),
         new Platform(1775, 25, 325, true)
-    ];
+    ];*/
 
     //#endregion
 }

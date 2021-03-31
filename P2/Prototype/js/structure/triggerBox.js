@@ -1,5 +1,8 @@
 "use strict";
 
+//TO BE PORTED TO ENTITIES.
+
+
 /**
  * Box which triggers a special effect when the player enters it.
  */
@@ -83,6 +86,7 @@ class TriggerBox
      * Holds all triggerboxes used in the menu.
      * Only contains 'ButtonSelect' effects.
      */
+    // TO BE PORTED TO ENTITIES SOON
     static allM = 
     [
         new TriggerBox(300, 390, 600, 100, new Button(0)),
@@ -96,18 +100,22 @@ class TriggerBox
 
 
     /** Holds the goal triggerbox used in level 1. */
+    /* TO BE ADDED AS ENTITY
     static G1 =  new TriggerBox(1750, 175, 50, 250, new Goal(true));
+    */
 
     /** Holds all switch-type triggerboxes used in level. */
+    /* TO BE ADDED AS ENTITY
     static S1 = 
     [
         new TriggerBox(800, 1250, 100, 100, new Switch()),
         new TriggerBox(1100, 550, 100, 100, new Switch()),
         new TriggerBox(165, 325, 100, 100, new Switch()),
         new TriggerBox(385, 325, 100, 100, new Switch())
-    ];
+    ];*/
 
     /** Holds all triggerboxes used in level 1. */
+    /* TO BE ADDED AS ENTITY
     static allL1 = 
     [
         new TriggerBox(1425, 1390, 450, 20, new Teleport(new Vector2D(1100, 1250))),
@@ -118,6 +126,7 @@ class TriggerBox
         TriggerBox.S1[3],
         TriggerBox.G1
     ];
+    */
 
     /** Holds all arrays which hold every triggerbox of a specific level. */
     //Will be more useful once more levels are added.

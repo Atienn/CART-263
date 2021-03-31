@@ -1,5 +1,7 @@
 "use strict";
 
+//TO BE IMPLEMENTED AS ENTITY 'ONOVERLAP' FUNCTIONS.
+
 /**
  * Abstract class which allows polymorphism.
  * Effects are triggered by triggerboxes.
