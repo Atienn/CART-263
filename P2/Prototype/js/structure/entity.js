@@ -30,11 +30,13 @@ class Entity {
         //The method to display the entity.
         this.display = display;
 
-        //The 
+        //The function to check if there is overlap (dictates the shape of the check)
+        //and the function to execute if there is overlap.
         this.overlapCheck = overlapCheck;
         this.onOverlap = onOverlap;
 
-
+        //Value that will specify the exact behaviour of the entity. For example, for a teleport effect,
+        // it could be a Vector2D specifying which position to teleport to.
         this.mod = modifier;
     }
 
@@ -53,6 +55,7 @@ class Entity {
         });
     }
 
+    /** Displays all of the current entities. */
     static displayAll() {
 
         //Translates the platfroms to be drawn from the player's perspective.
