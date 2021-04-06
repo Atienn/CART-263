@@ -8,21 +8,11 @@ let MenuState =
     //Tracks which button is currently selected.
     selected: 0,
 
-    //Tracks what text should be displayed to 
+    //Tracks what text should be displayed to ???
     contextualText: "",
 
     //Tracks if the settings panel is active.
-    settings: false,
-
-    //Tracks the pixel density of the canvas.
-    //Lower numbers means a blurrier image, but faster performance.
-    //To avoid floating point error, we use interger numbers and divide by 10 afterwards.
-    density: 0,
-
-    //Tracks the master volume of the game.
-    //To avoid floating point error, we use interger numbers and divide by 10 afterwards.
-    volume: 1,
-
+    settingsPanel: false,
 
     //Holds the text of each main menu button.
     buttonText:
@@ -38,6 +28,8 @@ let MenuState =
      */
     setup()
     {
+        //#region PLACE INSIDE FUNCTION
+
         //Unlocks the analyzers from 'currentMusic' as it's switching track.
         //Not doing so causes the analyzers to stop working entirely.
         freqAnalyzer.setInput();
@@ -57,11 +49,13 @@ let MenuState =
         freqAnalyzer.setInput(currentMusic);
         ampAnalyzer.setInput(currentMusic);
 
+        //#endregion
+
         //Send 'hueChange' a quarter further into the spectrum.
         changeHue(90);
 
         //Start with the settings panel closed.
-        this.settings = false;
+        this.settingsPanel = false;
 
         //Switch to the menu state.
         state = MenuState;
@@ -96,75 +90,60 @@ let MenuState =
                 //SETTINGS
                 case 1:
                     //If the settings panel is closed, open it. If it's open, close it.
-                    this.settings = !this.settings;
+                    this.settingsPanel = !this.settingsPanel;
                 break;
 
                 //QUIT
                 //Makes the user leave the page, either by closing it or by sending them to their previously visited page.
                 case 2:
-                    //Checks if the user has more than a single page in their history.
-                    //If they do, close the page, other wise send them forwards/backwards in their history.
-                    if(window.history.length === 1)
-                    {
-                        //If the user only has this page in their history, close the window or tab.
-                        window.close();
-                    }
-                    else
-                    {
-                        //Send the user to the previous page in their history.
-                        window.history.back();
-
-                        //If the user is still on the page, then there were no last page to go to.
-                        //Send the user to the next page in their history.
-                        window.history.forward();
-                    }
+                    quit();
                 break;
 
                 //INCREASE DENSITY
                 case 3:
                     //If the density is below 3.0, add 0.1.
-                    if(this.density < 30)
+                    if(settings.density < 30)
                     {
                         //Add 1 to the density counter.
-                        this.density++;
+                        settings.density++;
                         //Apply the change, dividing by 10 to only add 0.1.
-                        pixelDensity(this.density / 10);
+                        pixelDensity(settings.density / 10);
                     }
                 break;
                 
                 //LOWER DENSITY
                 case 4:
                     //If the density is above 0.1, subtract 0.1.
-                    if(this.density > 1)
+                    if(settings.density > 1)
                     {
                         //Remove 1 from the density counter.
-                        this.density--;
+                        settings.density--;
                         //Apply the change, dividing by 10 to only remove 0.1.
-                        pixelDensity(this.density / 10);
+                        pixelDensity(settings.density / 10);
                     }
                 break;
 
                 //INCREASE VOLUME
                 case 5:
                     //If the volume is below 1.0, add 0.1.
-                    if(this.volume < 10)
+                    if(settings.volume < 10)
                     {
                         //Add 1 to the volume counter.
-                        this.volume++;
+                        settings.volume++;
                         //Apply the change, dividing by 10 to only add 0.1.
-                        masterVolume(this.volume / 10);
+                        masterVolume(settings.volume / 10);
                     }
                 break;
 
                 //DECREASE VOLUME
                 case 6:
                     //If the volume is above 0.0, remove 0.1.
-                    if(this.volume > 0)
+                    if(settings.volume > 0)
                     {
                         //Remove 1 from the volume counter.
-                        this.volume--;
+                        settings.volume--;
                         //Apply the change, dividing by 10 to only remove 0.1.
-                        masterVolume(this.volume / 10);
+                        masterVolume(settings.volume / 10);
                     }
                 break;
             }
@@ -220,7 +199,7 @@ let MenuState =
         //SETTINGS PANEL
 
         //If the settings panel is active, render it.
-        if(this.settings)
+        if(this.settingsPanel)
         {
             //Makes the rectangle's fill white.
             fill(100);
