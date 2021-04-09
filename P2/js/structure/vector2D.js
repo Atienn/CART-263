@@ -67,6 +67,15 @@ class Vector2D
         this.y = newValues.y;
     }
 
+
+    /**
+     * 
+     */
+    Set(newX, newY) {
+        this.x = newX;
+        this.y = newY;
+    }
+
     /**
      * Adds the values of an input vector onto this one.
      * (Does the same function that a '+=' operator would.)

@@ -45,13 +45,13 @@ let PlayingState =
 
         //
         Entity.current = [
-            new Entity(new Vector2D(660, 750), 550, 200, Entity.whiteText, Entity.rectCheck, () => {}, 'These are the entities that have been added up to now.\n\nTriggerboxes and thier effects will be re-written as entities and added back soon.'),
-            new Entity(new Vector2D(400, 1000), 250, 100, Entity.whiteText, Entity.rectCheck, () => {}, 'These will be useful for creating a tutorial level.'),
-            new Entity(new Vector2D(400, 1150), 300, 100, Entity.whiteText, Entity.rectCheck, () => {}, 'Textbox.'),
+            new Entity(new Vector2D(660, 750), 550, 200, Entity.whiteTextBox, Entity.rectCheck, none, 'These are the entities that have been added up to now.\n\nTriggerboxes and thier effects will be re-written as entities and added back soon.'),
+            new Entity(new Vector2D(400, 1000), 250, 100, Entity.whiteTextBox, Entity.rectCheck, none, 'These will be useful for creating a tutorial level.'),
+            new Entity(new Vector2D(400, 1150), 300, 100, Entity.whiteTextBox, Entity.rectCheck, none, 'Textbox.'),
             new Entity(new Vector2D(900, 1100), 50, 10, Entity.redTriangle, Entity.rectCheck, Entity.knockback, new Vector2D(0, -50)),
-            new Entity(new Vector2D(900, 1150), 100, 100, Entity.whiteText, Entity.rectCheck, () => {}, 'Jump pad.'),
+            new Entity(new Vector2D(900, 1150), 100, 100, Entity.whiteTextBox, Entity.rectCheck, none, 'Jump pad.'),
             new Entity(new Vector2D(660, 1000), 30, 30, Entity.yellowCircle, Entity.circleCheck, Entity.dashRefresh),
-            new Entity(new Vector2D(660, 1150), 200, 100, Entity.whiteText, Entity.rectCheck, () => {}, 'Dash refresh')
+            new Entity(new Vector2D(660, 1150), 200, 100, Entity.whiteTextBox, Entity.rectCheck, none, 'Dash refresh')
         ];
 
         //Send 'hueChange' a quarter further into the spectrum.
@@ -60,9 +60,6 @@ let PlayingState =
         //Pause the game, resets the player's position, velocity, dash, state
         //and reset switches.
         this.restart();
-
-        //Switch to the playing state.
-        state = PlayingState;
     },
 
 
@@ -77,7 +74,7 @@ let PlayingState =
             //TriggerBox.isWithinBound(Player.pos, TriggerBox.allL1);
 
             //Check if the player is overlapping an entity and potentially trigger its onOverlap function.
-            Entity.overlapCheckAll(Player, Entity.current);
+            Entity.checkAll(Player, Entity.current);
 
             //Update the player's position and react to inputs.
             Player.behaviour();
@@ -93,7 +90,7 @@ let PlayingState =
         }
 
         //Regardless of pause, if R is pressed, make the player restart the level.
-        if (keyIsDown(82) && keyCode) {
+        if (keyIsDown(settings.input.restart)) {
             //Make the player restart.
             this.restart();
         }
@@ -187,12 +184,11 @@ let PlayingState =
                 //If ENTER is pressed, quit to menu.
                 if (keyCode === 13) {
                     //Calls the 'MenuState' setup and switch the state to it.
-                    MenuState.setup();
-                    state = MenuState;
+                    switchState(MenuState);
                 }
                 //If the key isn't ESCAPE or R and the level wasn't cleared, unpause the game.
                 //The first two prevent the paused menu from opening/closing itself over and over if ESCAPE/R are held down.
-                else if (keyCode != 27 && keyCode != 82 && !this.cleared) {
+                else if (keyCode != 27 && keyCode != settings.input.restart && !this.cleared) {
                     //Set the playing state to true.
                     this.playing = true;
                 }

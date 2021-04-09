@@ -1,6 +1,6 @@
 /**
  * Game object which occupies some or no space.
- * Runs its 'onOverlap' function if 'overlapCheck' returns true.
+ * Runs its 'event' function if 'check' returns true.
  */
 class Entity { 
     
@@ -8,18 +8,18 @@ class Entity {
     //Subclasses that autmomatically fill out part of it will be implemented later.
     /**
      * Game object which occupies some or no space.
-     * Runs its 'onOverlap' function if 'overlapCheck' returns true.
+     * Runs its 'event' function if 'check' returns true.
      * 
      * @param {Vector2D} position - The position (x, y) of the entity.
      * @param {Number} width - The widrh (x) of the entity's collider.
      * @param {Number} height - (Optional) The height (y) of the entity's collider. Defaults to width.
      * @param {Function} display - (Optional) The function used to display the entity.
-     * @param {Function} overlapCheck - The function to check if a given position overlaps this entity's 'collider'. Dictates the collider's shape.
-     * @param {Function} onOverlap - The function to run if there is overlap.
-     * @param {any} modifier - (Optional) The value to specify the exact behaviour of the entity. Can be the speed to add or the text to display.
+     * @param {Function} check - The function to check every frame to determine if the entity event should trigger. Ex: check if a given position overlaps this entity's 'collider'.
+     * @param {Function} event - The function to run if there is overlap.
+     * @param {any} modifier - (Optional) The value to specify the exact behaviour of the entity. Ex: the speed to add or the text to display.
      * The type of this value is assumed to match what the entity type expects it to be.
      */
-    constructor(position, width, height = width, display = () => {}, overlapCheck, onOverlap, modifier = null) {
+    constructor(position, width, height = width, display, check, event, modifier = null) {
         //Position.
         this.pos = position;
 
@@ -32,8 +32,8 @@ class Entity {
 
         //The function to check if there is overlap (dictates the shape of the check)
         //and the function to execute if there is overlap.
-        this.overlapCheck = overlapCheck;
-        this.onOverlap = onOverlap;
+        this.check = check;
+        this.event = event;
 
         //Value that will specify the exact behaviour of the entity. For example, for a teleport effect,
         // it could be a Vector2D specifying which position to teleport to.
@@ -47,52 +47,48 @@ class Entity {
      * Checks of overlap in all entities and potentially 
      * trigger thier 'onOverlap' function. 
      */
-    static overlapCheckAll(target, entities) {
+    static checkAll(target, entities) {
         entities.forEach(entity => {
-            if(entity.overlapCheck(target.pos)) {
-                entity.onOverlap(target);
+            if(entity.check(target)) {
+                entity.event(target);
             }
         });
     }
 
     /** Displays all of the current entities. */
-    static displayAll() {
+    static displayAll(arr) {
 
         //Translates the platfroms to be drawn from the player's perspective.
         //Should be moved outside of this function as to only be called once per draw() (for both platforms & entities).
-        translate((width/2) - Player.pos.x - camOffset.x, (height/1.5) - Player.pos.y - camOffset.y);
+        //translate((width/2) - Player.pos.x - camOffset.x, (height/1.5) - Player.pos.y - camOffset.y);
         
-        this.current.forEach(entity => {
+        arr.forEach(entity => {
             push();
             entity.display();
             pop();
         });
 
         //Temporary. Terrible practice.
-        translate(-((width/2) - Player.pos.x - camOffset.x), -((height/1.5) - Player.pos.y - camOffset.y));
+        //translate(-((width/2) - Player.pos.x - camOffset.x), -((height/1.5) - Player.pos.y - camOffset.y));
     }
 
-    //#region OVERLAPCHECK
+
+    //#region CHECK
 
     /** Circular overlap check. */
-    static circleCheck(position) {
-        return (dist(this.pos.x, this.pos.y, position.x, position.y) < this.w);
+    static circleCheck(target) {
+        return misc.circleCheck(target.pos, this.pos, this.w);
     }
 
     /** Rectangular overlap check. */
-    static rectCheck(position) {
-        return (
-            position.x >= this.pos.x - this.w && 
-            position.x <= this.pos.x + this.w &&
-            position.y >= this.pos.y - this.h &&
-            position.y <= this.pos.y + this.h 
-        );
+    static rectCheck(target) {
+        return misc.rectCheck(target.pos, this.pos, this.w, this.h);
     }
 
     //#endregion
 
 
-    //#region ONOVERLAP
+    //#region EVENT
 
     static knockback(target) {
         //Refresh dash as the jump pad is considered as ground.
@@ -101,10 +97,12 @@ class Entity {
         target.vel.Add(this.mod);
     }
 
+    /** Refreshes the target's dash. */
     static dashRefresh(target) {
-        //Refresh the dash immediately.
         target.dash = true;
     }
+
+    //#endregion
 
 
     //#region DISPLAY
@@ -123,12 +121,104 @@ class Entity {
         circle(this.pos.x, this.pos.y, this.w*0.75);
     }
 
-    static whiteText() {
+    static whiteTextBox() {
         stroke(0);
         strokeWeight(2);
         textSize(20);
         textAlign(CENTER);
         text(this.mod, this.pos.x, this.pos.y, this.w, this.h);
+    }
+
+    //#endregion
+}
+
+
+
+class StateEntity extends Entity {
+    /**
+     * Game object which occupies some or no space.
+     * Runs its 'event' function if 'check' returns true.
+     * Can 
+     * 
+     * @param {Vector2D} position - The position (x, y) of the entity.
+     * @param {Number} width - The widrh (x) of the entity's collider.
+     * @param {Number} height - (Optional) The height (y) of the entity's collider. Defaults to width.
+     * @param {Function} display - (Optional) The function used to display the entity.
+     * @param {Function} check - The function to check every frame to determine if the entity event should trigger. Ex: check if a given position overlaps this entity's 'collider'.
+     * @param {Function} event - The function to run if there is overlap.
+     * @param {any} modifier - (Optional) The value to specify the exact behaviour of the entity. Ex: the speed to add or the text to display.
+     * @param {any} stateType - (Optional) The type of states the entity can have (either boolean or number).
+     * The type of this value is assumed to match what the entity type expects it to be.
+     */
+    constructor(position, width, height = width, display, check, event, modifier = null) {
+
+        //Create the entity.
+        super(position, width, height, display, check, event, modifier);
+
+        //Start the entity as inactive.
+        this.state = false;
+    }
+
+    //#region CHECK
+
+    /** Rectangular overlap check. */
+    static rectCheckHold(target) {
+        this.state = misc.rectCheck(target.pos, this.pos, this.w, this.h);
+        return this.state;
+    }
+
+    static rectCheckOnce(target) {
+
+    }
+    
+    //#endregion
+
+
+    //#region DISPLAY
+
+    static textButton() {
+        stroke(100);
+        strokeWeight(5);
+        fill(this.state ? 25 : 0);
+        rect(this.pos.x, this.pos.y, this.w, this.h);
+
+        noStroke();
+        fill(100);
+
+        //For some reason, setting rectMode to RADIUS makes text bounding boxes
+        //act as if they're in rectMode CORNER. So we manually need to work around this.
+        rectMode(CENTER);
+        textSize(50);
+        text(this.mod, this.pos.x + 52.5, this.pos.y, this.w * 2, this.h * 2);
+    }
+
+    static arrowButton() {
+        noStroke();
+
+        fill(this.state ? 25 : 0);
+        rect(this.pos.x, this.pos.y, this.w, this.h);
+
+        fill(100);
+
+        let w2 = this.w / 2;
+        let h2 = this.h / 2;
+
+        //Up arrow.
+        if(this.mod) {
+            triangle(
+                this.pos.x, this.pos.y - h2,
+                this.pos.x - w2, this.pos.y + h2,
+                this.pos.x + w2, this.pos.y + h2
+            );
+        }
+        //Down arrow.
+        else {
+            triangle(
+                this.pos.x, this.pos.y + h2,
+                this.pos.x - w2, this.pos.y - h2,
+                this.pos.x + w2, this.pos.y - h2
+            );
+        }
     }
 
     //#endregion

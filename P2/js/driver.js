@@ -13,11 +13,22 @@ All music used is royalty-free.
 //Tracks which state the game is in.
 let state;
 
-//Tracks the user's desired input.
+//Tracks the user's desired settings (inputs, volume, etc).
 let settings;
 
-//Tracks if the user has clicked their mouse on the specific frame it's called on.
-let mouseClick = false;
+
+let mouse = {
+    //Tracks if the user has clicked their mouse for the specific frame it's referred on.
+    click: false,
+    //The mouse's position on screen.
+    pos: Vector2D.Zero(),
+
+    /** Draws a custom '+' cursor at the mouse position that 'beats' with the music. */
+    display() {
+        rect(this.pos.x, this.pos.y, 10 + ampCurrent * 10, 1 + ampCurrent);
+        rect(this.pos.x, this.pos.y, 1 + ampCurrent, 10 + ampCurrent * 10);
+    }
+}
 
 //#endregion
 
@@ -104,8 +115,8 @@ function setup()
     strokeCap(SQUARE);
 
     //Sets shapes to be drawn from the center.
-    ellipseMode(CENTER);
-    rectMode(CENTER);
+    ellipseMode(RADIUS);
+    rectMode(RADIUS);
 
     //Set the default text to be small and aligned from the left-center.
     textSize(20);
@@ -115,8 +126,8 @@ function setup()
 
     //#region Audio Settings
 
-    //Reduce the volume to 10%.
-    masterVolume(0.1);
+    //
+    masterVolume(settings.volume / 10);
 
     //Give the current track an abstract sound file so that analyzers can connect to it and to
     //allow it to be stopped and switched to something else when calling the first 'state.setup()'.
@@ -138,8 +149,9 @@ function setup()
     //Set the starting game state.
     state = MenuState;
 
-    //Get the default density of the canvas.
-    settings.density = Math.round(pixelDensity()*10);
+    //Set density.    
+    pixelDensity(settings.density / 10);
+
 
     //Call the state's setup before its behaviour.
     state.setup();
@@ -154,6 +166,9 @@ function draw()
     //Don't update if the window is not in focus.
     if(focused)
     {
+        //Set the new position of the mouse.
+        mouse.pos.Set(mouseX, mouseY);
+
         //Measure the level of amplitude and send it to the amplitude variable.
         ampCurrent = ampAnalyzer.getLevel();
         //Measures the level of frequencies and sends them to the frequency array.
@@ -162,8 +177,8 @@ function draw()
         //Call the game state's update function.
         state.update();
 
-        //Now that any logic is done, assume that the user won't click next frame.
-        mouseClick = false;
+        //Now that all logic is done for this frame, assume that the user won't click next frame.
+        mouse.click = false;
 
 
         //Since 'playing' is defined as false and needs to be set to false for the player to return to menu,
@@ -181,9 +196,8 @@ function draw()
             pop(); //Revert to the previous text settings.
         }
 
-        //Draws a custom '+' cursor at the mouse position that 'beats' with the music.
-        rect(mouseX,mouseY, 20 + ampCurrent * 25, 1 + ampCurrent);
-        rect(mouseX,mouseY, 1 + ampCurrent, 20 + ampCurrent * 25);
+        //Draw the cursor.
+        mouse.display();
 
         //If the window wasn't focused last frame, then the cursor was enabled. Disables it. 
         if(!wasFocused)
@@ -203,7 +217,7 @@ function draw()
         //Enable the cursor.
         cursor();
 
-        //Draw a sem-transparent black background over the previous frame.
+        //Draw a semi-transparent black background over the previous frame.
         background(0,0,0,0.75);
         
         
@@ -222,26 +236,26 @@ function draw()
 
 
 /**
- * Quits the page, either by sending them somewhere 
- * in thier history, or by closing the page.
+ * Is called when the user types a key (ignores function keys like Shift and Control).
+ * Calls the current state's key typed event.
  */
-function quit() {
-    //Checks if the user has more than a single page in their history.
-    //If they do, close the page, other wise send them forwards/backwards in their history.
-    if(window.history.length != 1)
-    {
-        //If the user only has this page in their history, close the window or tab.
-        window.close();
-    }
-    else
-    {
-        //Send the user to the previous page in their history.
-        window.history.back();
+//function keyTyped() { state.keyType(); }
 
-        //If the user is still on the page, then there were no last page to go to.
-        //Send the user to the next page in their history.
-        window.history.forward();
-    }
+/**
+ * Is called whenever the user is types a key on their keyboard.
+ * Calls the current state's key pressed event.
+ */
+//function keyPressed() { state.keyPress(); }
+
+
+/**
+ * Adjusts the size of what's displayed to match the window.
+ * Is automatically called if the window is resized at any point.
+ */
+function windowResized()
+{
+//Resizes the canvas with the values of the window
+resizeCanvas(windowWidth, windowHeight);
 }
 
 
@@ -252,27 +266,13 @@ function switchState(newState)
     newState.setup();
 }
 
-/**
- * Is called when the user types a key (ignores function keys like Shift and Control).
- * Calls the current state's key typed event.
- */
-function keyTyped() { state.keyType(); }
 
 /**
- * Is called whenever the user is types a key on their keyboard.
- * Calls the current state's key pressed event.
- */
-function keyPressed() { state.keyPress(); }
-
-/**
- * Only sets 'mouseClick' to true on the frame the user clicks their mouse.
+ * Only sets 'cursor.click' to true on the frame the user clicks their mouse.
  * This is very useful since it prevents any double input and the condition
  * can be checked with a global variable.
  */
-function mousePressed()
-{
-    mouseClick = true;
-}
+function mousePressed() { mouse.click = true; }
 
 
 /**
@@ -331,12 +331,27 @@ function changeHue(value)
 }
 
 
+/** Function specifying doing nothing. */
+function none() { }
+
+
 /**
- * Adjusts the size of what's displayed to match the window.
- * Is automatically called if the window is resized at any point.
+ * Quits the page, either by sending them somewhere 
+ * in thier history, or by closing the page.
  */
-function windowResized()
-{
-  //Resizes the canvas with the values of the window
-  resizeCanvas(windowWidth, windowHeight);
+ function quit() {
+
+    //Force saving settings before exiting.
+    saveSettings();
+
+    //Try to send the user to the previous page in their history.
+    window.history.back();
+
+    //If the user is still on the page, then there were no last page to go to.
+    //Send the user to the next page in their history.
+    window.history.forward();
+
+    //Again, if the user is still on the page, then there were no page to go to.
+    //Close the window or tab.
+    window.close();
 }

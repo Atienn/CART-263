@@ -74,7 +74,7 @@ let Player =
         //#region Collision Checks
 
         //Since after a first collision any further ones won't have any effect (for a single frame),
-        //then we don't have to any more collisons one one has happened.
+        //then we don't have to any more collisons one one has happened. -- had a stroke writing this
         //Sections the horizontal collision check process for horizontal platforms so that it can be halted mid-process.
         horizontalCheck:
         {
@@ -232,23 +232,23 @@ let Player =
 
         //INPUTS
 
-        //If A, S or D are pressed, add to the player's velocity in the appropriate direction.
+        //If directional inputs are pressed, add to the player's velocity in the appropriate direction.
 
-        //If 'UP ARROW' is pressed, add velocity to upwards.
-        if(keyIsDown(38)) 
+        //If the up input is pressed, add velocity to upwards.
+        if(keyIsDown(settings.input.up)) 
         { 
             this.dir.y--;
         }
         
-        //If 'DOWN ARROW' is pressed, add velocity downwards.
-        if(keyIsDown(40)) 
+        //If the down input is pressed, add velocity downwards.
+        if(keyIsDown(settings.input.down)) 
         {
             this.dir.y++;
             this.velAdd.y++;
         }
 
-        //If 'LEFT ARROW' is pressed, set desired direction and add velocity to the left.
-        if(keyIsDown(37)) 
+        //If the left input is pressed, set desired direction and add velocity to the left.
+        if(keyIsDown(settings.input.left)) 
         {
             //If the player isn't currently on a left wall, add left to their desired direction.
             //This is because if the player is on the wall, their x direction will already have been set.
@@ -265,8 +265,8 @@ let Player =
             this.oritentation = false;
         }
         
-        //If 'RIGHT ARROW' is pressed, set desired direction and add velocity to the right.
-        if(keyIsDown(39)) 
+        //If the right input is pressed, set desired direction and add velocity to the right.
+        if(keyIsDown(settings.input.right)) 
         {
             //If the player isn't currently on a right wall, add right to their desired direction.
             //This is because if the player is on the wall, their x direction will already have been set.
@@ -283,8 +283,8 @@ let Player =
             this.oritentation = true;
         }
 
-        //If 'SPACE' is pressed, either make the player jump or lenghten thier air-time.
-        if(keyIsDown(32)) 
+        //If the jump input is pressed, either make the player jump or lenghten thier air-time.
+        if(keyIsDown(settings.input.jump)) 
         {
             //If 'SPACE' is pressed and the player is not in the air (for regular and last state), add a burst of velocity.
             if(this.state !== 0 || this.lastState !== 0)
@@ -327,8 +327,8 @@ let Player =
         //Normalizes the direction vector.
         this.dir = this.dir.Normalized();
 
-        //If 'Z' is pressed and the player's dash is available, give a burst of speed in pDir's direction.
-        if(keyIsDown(90) && this.dash && this.dashTimer <= 0) 
+        //If the dash input is pressed and the player's dash is available, give a burst of speed in pDir's direction.
+        if(keyIsDown(settings.input.dash) && this.dash && this.dashTimer <= 0) 
         {
             //Consider the dash as being used.
             this.dash = false;
@@ -376,7 +376,7 @@ let Player =
         fill(0 + 2 * Player.dashTimer + 40 * (Player.dashTimer > 0));
 
         //Draw the player circle around the center of the screen (affected by the camera offset).
-        circle((width / 2) - camOffset.x, (height / 1.5) - camOffset.y, 20, 20);
+        circle((width / 2) - camOffset.x, (height / 1.5) - camOffset.y, 10);
         //Revert to the previous drawing settings.
         pop();
     }

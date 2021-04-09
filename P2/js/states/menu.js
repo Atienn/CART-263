@@ -14,14 +14,9 @@ let MenuState =
     //Tracks if the settings panel is active.
     settingsPanel: false,
 
-    //Holds the text of each main menu button.
-    buttonText:
-    [
-        'PLAY',
-        'SETTINGS',
-        'QUIT'
-    ],
-
+    //
+    menuButtons: [],
+    settingsButtons: [],
 
     /**
      * Switch to the menu music, disables the settings panel and switches the state.
@@ -51,14 +46,25 @@ let MenuState =
 
         //#endregion
 
+        //
+        this.menuButtons = [
+            new StateEntity(new Vector2D(297.5, 375), 300, 50, StateEntity.textButton, StateEntity.rectCheckHold, this.playSelect, 'PLAY'),
+            new StateEntity(new Vector2D(297.5, 500), 300, 50, StateEntity.textButton, StateEntity.rectCheckHold, this.settingSelect, 'SETTINGS'),
+            new StateEntity(new Vector2D(297.5, 625), 300, 50, StateEntity.textButton, StateEntity.rectCheckHold, this.quitSelect, 'QUIT')
+        ];
+
+        this.settingsButtons = [
+            new StateEntity(new Vector2D(1270, 527.5), 20, 12.5, StateEntity.arrowButton, StateEntity.rectCheckHold, this.densityUpSelect, true),
+            new StateEntity(new Vector2D(1320, 527.5), 20, 12.5, StateEntity.arrowButton, StateEntity.rectCheckHold, this.densityDownSelect, false),
+            new StateEntity(new Vector2D(1270, 602.5), 20, 12.5, StateEntity.arrowButton, StateEntity.rectCheckHold, this.volumeUpSelect, true),
+            new StateEntity(new Vector2D(1320, 602.5), 20, 12.5, StateEntity.arrowButton, StateEntity.rectCheckHold, this.volumeDownSelect, false)
+        ]
+
         //Send 'hueChange' a quarter further into the spectrum.
         changeHue(90);
 
         //Start with the settings panel closed.
         this.settingsPanel = false;
-
-        //Switch to the menu state.
-        state = MenuState;
     },
 
     /**
@@ -69,87 +75,14 @@ let MenuState =
     update()
     {
         //Assume that no button is selected.
-        this.selected = -1;
+        this.contextualText = "";
 
         //Check if the mouse is hovering over any button.
         //If it is 'selected' will receive the index of the button.
-        TriggerBox.isWithinBound(new Vector2D(mouseX, mouseY), TriggerBox.allM);
+        //TriggerBox.isWithinBound(new Vector2D(mouseX, mouseY), TriggerBox.allM);
 
-        //If the mouse is pressed 
-        if(mouseClick)
-        {
-            //Change the behaviour depending on which button is selected, if any.
-            switch(this.selected)
-            {
-                //PLAY
-                //Calls the 'PlayingState' setup, switching the game state to it.
-                case 0:
-                    PlayingState.setup();
-                break;
-
-                //SETTINGS
-                case 1:
-                    //If the settings panel is closed, open it. If it's open, close it.
-                    this.settingsPanel = !this.settingsPanel;
-                break;
-
-                //QUIT
-                //Makes the user leave the page, either by closing it or by sending them to their previously visited page.
-                case 2:
-                    quit();
-                break;
-
-                //INCREASE DENSITY
-                case 3:
-                    //If the density is below 3.0, add 0.1.
-                    if(settings.density < 30)
-                    {
-                        //Add 1 to the density counter.
-                        settings.density++;
-                        //Apply the change, dividing by 10 to only add 0.1.
-                        pixelDensity(settings.density / 10);
-                    }
-                break;
-                
-                //LOWER DENSITY
-                case 4:
-                    //If the density is above 0.1, subtract 0.1.
-                    if(settings.density > 1)
-                    {
-                        //Remove 1 from the density counter.
-                        settings.density--;
-                        //Apply the change, dividing by 10 to only remove 0.1.
-                        pixelDensity(settings.density / 10);
-                    }
-                break;
-
-                //INCREASE VOLUME
-                case 5:
-                    //If the volume is below 1.0, add 0.1.
-                    if(settings.volume < 10)
-                    {
-                        //Add 1 to the volume counter.
-                        settings.volume++;
-                        //Apply the change, dividing by 10 to only add 0.1.
-                        masterVolume(settings.volume / 10);
-                    }
-                break;
-
-                //DECREASE VOLUME
-                case 6:
-                    //If the volume is above 0.0, remove 0.1.
-                    if(settings.volume > 0)
-                    {
-                        //Remove 1 from the volume counter.
-                        settings.volume--;
-                        //Apply the change, dividing by 10 to only remove 0.1.
-                        masterVolume(settings.volume / 10);
-                    }
-                break;
-            }
-        }
-
-        //#region Rendering
+        Entity.checkAll(mouse, this.menuButtons);
+        
 
         //Ups the value of 'hueChange' by 0.05.
         changeHue(0.05);
@@ -160,40 +93,9 @@ let MenuState =
         //We don't want to keep the following drawing settings.
         push();
 
-
         //Makes rectangles drawn from the corner, simplying things in our case.
-        rectMode(CORNER);
-
-
-        //BUTTONS
-
-        //Makes the rectangle's fill white.
-        fill(100);
-        //For each button, draw a rectangle which will act as an outline.
-        for(let i = 0; i < 3; i++)
-        {
-            rect(0, (i*125)+340, 600, 100);
-        }
-
-        //Make's the rectangle's fill black.
-        fill(0);
-
-        //For each button, draw a rectangle going from the left side of the screen.
-        for(let i = 0; i < 3; i++)
-        {
-            rect(0, (i*125)+345, 595, 90);
-            
-            //If the button is selected, add a semi-transparent highlight over it.
-            if(this.selected === i)
-            {
-                //Switch to a half-transparent grey fill.
-                fill(0,0,100,0.25);
-                //Draw the highlight.
-                rect(0, (i*125)+340, 600, 100);
-                //Switch back to the previous fill.
-                fill(0);
-            }
-        }
+        //Useless since of text behaves like CORNER when in RADIUS.
+        //rectMode(CORNER);
 
 
         //SETTINGS PANEL
@@ -201,16 +103,18 @@ let MenuState =
         //If the settings panel is active, render it.
         if(this.settingsPanel)
         {
+            Entity.checkAll(mouse, this.settingsButtons);
+            
             //Makes the rectangle's fill white.
-            fill(100);
-            //Draw the outline of the window.
-            rect(765, 360, 600, 300);
+            stroke(100);
+            strokeWeight(5);
 
             //Switch back to the previous fill.
             fill(0);
-            //Draw the body of teh window.
-            rect(770, 365, 590, 290);
+            //Draw the body of the window.
+            rect(1065, 510, 295, 145);
 
+            noStroke();
 
             //Make the following text white.
             fill(100);
@@ -227,69 +131,21 @@ let MenuState =
             text(`${width} x ${height}`, 1200, 455); //Displays the user's resolution which depends on thier window size.
 
             text('Pixel Density', 815, 530);
-            text((this.density / 10).toFixed(1), 1200, 530); //Ranges from 0.1 to 3.0.
+            text((settings.density / 10).toFixed(1), 1200, 530); //Ranges from 0.1 to 3.0.
 
             text('Audio Volume', 815, 605);
-            text((this.volume / 10).toFixed(1), 1200, 605); //Ranges from 0.1 to 1.0.
+            text((settings.volume / 10).toFixed(1), 1200, 605); //Ranges from 0.1 to 1.0.
 
             textSize(15);
             text(`Reccomended values are around 1500 x 750. Modify with 'Ctrl' + 'Scroll'.`, 825, 485);
             text('Affects the sharpness of the image. Lower to increase performance.', 825, 560);
             text('Modifies of how loud all game sounds are.', 825, 635);
 
-            //Draw arrows representing increase/decrease buttons.
-            triangle(1270, 520, 1260, 535, 1280, 535); //Up arrow, pixel density.
-            triangle(1320, 535, 1310, 520, 1330, 520); //Down arrow, pixel density.
-            triangle(1270, 595, 1260, 610, 1280, 610); //Up arrow, audio volume.
-            triangle(1320, 610, 1310, 595, 1330, 595); //Down arrow, audio volume.
-            
-
-            //If an increase/decrease button is selected, draw a highlight over it.
-            if(this.selected > 2)
-            {
-                //Make the highlight semi-transparent.
-                fill(0,0,100,0.25);
-
-                //Draw a semi-transparent rectangle over the button.
-                switch(this.selected)
-                {
-                    //Density increase highlight.
-                    case 3:
-                        rect(1250, 515, 40, 25);
-                    break;
-
-                    //Density decrease highlight.
-                    case 4:
-                        rect(1300, 515, 40, 25);
-                    break;
-
-                    //Volume increase highlight.
-                    case 5:
-                        rect(1250, 590, 40, 25);
-                    break;
-
-                    //Volume decrease highlight.
-                    case 6:
-                        rect(1300, 590, 40, 25);
-                    break;
-                }
-
-            }
+            Entity.displayAll(this.settingsButtons);
         }
-        
-
-        //TEXT
-
-        //Makes the text larger.
-        textSize(50);
 
         //Make the text white.
         fill(100);
-        //For each button, write its respective text in the left-center as to align each button's text.
-        for(let i = 0; i < 3; i++)
-        {
-            text(this.buttonText[i],50,(i*125)+395);
-        }
 
         //Make the text much larger.
         textSize(150);
@@ -299,62 +155,83 @@ let MenuState =
         //Reduce the text's size.
         textSize(40);
         //Write a subtitle.
-        text("A game about going fast and making mistakes.", 60, 245);
+        text("A game about moving fast and making mistakes.", 60, 245);
 
         //Reduce the text size's further
         textSize(30);
-        //Chooses a message to display under the buttons if they are selected.
-        switch(this.selected)
-        {
-            //Play message.
-            case 0:
-                this.contextualText = "Start playing. Adjusting settings first is recommended."
-            break;
-
-            //Settings message.
-            case 1:
-                this.contextualText = "Adjust settings like audio volume or pixel density."
-            break;
-
-            //Quit message.
-            case 2:
-                this.contextualText = "Quit the game."
-            break;
-
-            //Increase density message.
-            case 3:
-                this.contextualText = "Increase the pixel density."
-            break;
-
-            //Decrease density message.
-            case 4:
-                this.contextualText = "Lower the pixel density."
-            break;
-
-            //Increase volume message.
-            case 5:
-                this.contextualText = "Increase the audio volume."
-            break;
-
-            //Decrease volume message.
-            case 6:
-                this.contextualText = "Lower the audio volume."
-            break;
-
-            //If no buttons are selected, don't show any text.
-            default:
-                this.contextualText = "";
-            break;
-        }
 
         //Display the text under the buttons.
-        text(this.contextualText, 50, 725)
+        text(this.contextualText, 50, 725);
         
         //Revert to the previous drawing settings.
         pop();
 
+        Entity.displayAll(this.menuButtons);
+
         //#endregion
+    },
+
+
+    /** Free up memory used by the state before exiting. */
+    exit() {        
+        this.menuButtons = null;
+        this.settingsButtons = null;
+        this.contextualText = "";
+    },
+
+    
+    //#region BUTTON FUNCTIONS
+
+    playSelect() {
+        if(mouse.click) {
+            switchState(PlayingState);
+        }
+        MenuState.contextualText = "Start playing. Adjusting settings first is recommended.";
+    },
+
+    settingSelect() {
+        if(mouse.click) {
+            MenuState.settingsPanel = !MenuState.settingsPanel;
+        }
+        MenuState.contextualText = "Adjust inputs, audio volume or pixel density.";
+    },
+
+    quitSelect() {
+        if(mouse.click) {
+            quit();
+        }
+        MenuState.contextualText = "Quit the game.";
+    },
+
+    densityUpSelect() {
+        if(mouse.click) {
+            settingsHandler.densityUp();
+        }
+        MenuState.contextualText = "Increase the pixel density.";
+    },
+
+    densityDownSelect() {
+        if(mouse.click) {
+            settingsHandler.densityDown();
+        }
+        MenuState.contextualText = "Decrease the pixel density.";
+    },
+    
+    volumeUpSelect() {
+        if(mouse.click) {
+            settingsHandler.volumeUp();
+        }
+        MenuState.contextualText = "Increase the game's volume.";
+    },
+
+    volumeDownSelect() {
+        if(mouse.click) {
+            settingsHandler.volumeDown();
+        }
+        MenuState.contextualText = "Decrease the game's volume.";
     }
+
+    //#endregion
 }
 
 
