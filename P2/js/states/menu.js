@@ -5,8 +5,9 @@
  */
 let MenuState = 
 {
-    //Tracks which button is currently selected.
-    selected: 0,
+    //Menu music.
+    track: undefined,
+    trackName: "",
 
     //Tracks what text should be displayed to ???
     contextualText: "",
@@ -23,41 +24,21 @@ let MenuState =
      */
     setup()
     {
-        //#region PLACE INSIDE FUNCTION
-
-        //Unlocks the analyzers from 'currentMusic' as it's switching track.
-        //Not doing so causes the analyzers to stop working entirely.
-        freqAnalyzer.setInput();
-        ampAnalyzer.setInput();
-
-        //Stop any currently playing music.
-        currentMusic.stop();
-        //Switch the current track to the playing state music.
-        currentMusic = menuMusic;
-        //Make the current track loop.
-        currentMusic.loop();
-
-        //Change the index of the music name accordingly.
-        currentMusicIndex = 0;
-
-        //Sets the music as the input source. (Makes them ignore all other sounds, if any.)
-        freqAnalyzer.setInput(currentMusic);
-        ampAnalyzer.setInput(currentMusic);
-
-        //#endregion
+        music.setTrack(this.track, this.trackName);
 
         //
         this.menuButtons = [
-            new StateEntity(new Vector2D(297.5, 375), 300, 50, StateEntity.textButton, StateEntity.rectCheckHold, this.playSelect, 'PLAY'),
-            new StateEntity(new Vector2D(297.5, 500), 300, 50, StateEntity.textButton, StateEntity.rectCheckHold, this.settingSelect, 'SETTINGS'),
-            new StateEntity(new Vector2D(297.5, 625), 300, 50, StateEntity.textButton, StateEntity.rectCheckHold, this.quitSelect, 'QUIT')
+            new StateEntity(new Vector2D(297.5, 375), 300, 50, StateEntity.menuButton, StateEntity.rectCheckHold, this.playSelect, 'PLAY'),
+            new StateEntity(new Vector2D(297.5, 500), 300, 50, StateEntity.menuButton, StateEntity.rectCheckHold, this.settingSelect, 'SETTINGS'),
+            new StateEntity(new Vector2D(297.5, 625), 300, 50, StateEntity.menuButton, StateEntity.rectCheckHold, this.quitSelect, 'QUIT')
         ];
 
         this.settingsButtons = [
-            new StateEntity(new Vector2D(1270, 527.5), 20, 12.5, StateEntity.arrowButton, StateEntity.rectCheckHold, this.densityUpSelect, true),
-            new StateEntity(new Vector2D(1320, 527.5), 20, 12.5, StateEntity.arrowButton, StateEntity.rectCheckHold, this.densityDownSelect, false),
-            new StateEntity(new Vector2D(1270, 602.5), 20, 12.5, StateEntity.arrowButton, StateEntity.rectCheckHold, this.volumeUpSelect, true),
-            new StateEntity(new Vector2D(1320, 602.5), 20, 12.5, StateEntity.arrowButton, StateEntity.rectCheckHold, this.volumeDownSelect, false)
+            new StateEntity(new Vector2D(1265, 635), 70, 15, StateEntity.textButton, StateEntity.rectCheckHold, this.rebindSelect, 'REBIND'),
+            new StateEntity(new Vector2D(1270, 482.5), 20, 15, StateEntity.arrowButton, StateEntity.rectCheckHold, this.densityUpSelect, true),
+            new StateEntity(new Vector2D(1320, 482.5), 20, 15, StateEntity.arrowButton, StateEntity.rectCheckHold, this.densityDownSelect, false),
+            new StateEntity(new Vector2D(1270, 557.5), 20, 15, StateEntity.arrowButton, StateEntity.rectCheckHold, this.volumeUpSelect, true),
+            new StateEntity(new Vector2D(1320, 557.5), 20, 15, StateEntity.arrowButton, StateEntity.rectCheckHold, this.volumeDownSelect, false)  
         ]
 
         //Send 'hueChange' a quarter further into the spectrum.
@@ -112,7 +93,7 @@ let MenuState =
             //Switch back to the previous fill.
             fill(0);
             //Draw the body of the window.
-            rect(1065, 510, 295, 145);
+            rect(1065, 500, 295, 190);
 
             noStroke();
 
@@ -122,24 +103,27 @@ let MenuState =
             //Increase the text size.
             textSize(40);
             //Write the title of the panel.
-            text('SETTINGS MENU', 785, 400);
+            text('SETTINGS MENU', 785, 350);
 
             //Reduce the text size.
             textSize(25);
             //Write the individual setting names along with their respective value.
-            text('Display Resolution ', 815, 455);
-            text(`${width} x ${height}`, 1200, 455); //Displays the user's resolution which depends on thier window size.
+            text('Display Resolution ', 815, 410);
+            text(`${width} x ${height}`, 1200, 410); //Displays the user's resolution which depends on thier window size.
 
-            text('Pixel Density', 815, 530);
-            text((settings.density / 10).toFixed(1), 1200, 530); //Ranges from 0.1 to 3.0.
+            text('Pixel Density', 815, 485);
+            text((settings.density / 10).toFixed(1), 1200, 485); //Ranges from 0.1 to 3.0.
 
-            text('Audio Volume', 815, 605);
-            text((settings.volume / 10).toFixed(1), 1200, 605); //Ranges from 0.1 to 1.0.
+            text('Audio Volume', 815, 560);
+            text((settings.volume / 10).toFixed(1), 1200, 560); //Ranges from 0.1 to 1.0.
+
+            text('Controls', 815, 635);
 
             textSize(15);
-            text(`Reccomended values are around 1500 x 750. Modify with 'Ctrl' + 'Scroll'.`, 825, 485);
-            text('Affects the sharpness of the image. Lower to increase performance.', 825, 560);
-            text('Modifies of how loud all game sounds are.', 825, 635);
+            text(`Reccomended values are around 1500 x 750. Modify with 'Ctrl' + 'Scroll'.`, 825, 440);
+            text('Affects the sharpness of the image. Lower to increase performance.', 825, 515);
+            text('Modifies of how loud all game sounds are.', 825, 590);
+            text('Use to re-map game controls.', 825, 665);
 
             Entity.displayAll(this.settingsButtons);
         }
@@ -168,6 +152,9 @@ let MenuState =
 
         Entity.displayAll(this.menuButtons);
 
+        //Draw the cursor.
+        mouse.display();
+
         //#endregion
     },
 
@@ -184,7 +171,7 @@ let MenuState =
 
     playSelect() {
         if(mouse.click) {
-            switchState(PlayingState);
+            switchState(GameState);
         }
         MenuState.contextualText = "Start playing. Adjusting settings first is recommended.";
     },
@@ -229,6 +216,81 @@ let MenuState =
             settingsHandler.volumeDown();
         }
         MenuState.contextualText = "Decrease the game's volume.";
+    },
+
+    rebindSelect() {
+        if(mouse.click) {
+
+            //Record the previous update function.
+            let pastUpdate = MenuState.update;
+            //Get all of the game actions whose inputs can be re-mapped.
+            let actions = Object.getOwnPropertyNames(settings.input);
+            let keyIndex = 0;
+            let keyDown = false;
+            let keyName = 'none';
+            
+            //Get the name of the key on
+            window.onkeydown = () => {
+                keyName = event.code;
+            }
+
+            //Assign a new one.
+            MenuState.update = () => {
+
+                background(0, 0, 50, 0.1);
+
+                push();
+
+                //
+                rectMode(CORNERS);
+                fill(0);
+                stroke(100);
+                strokeWeight(5);
+
+                rect(475, 250, 1025, 550);
+
+                textAlign(CENTER);
+                noStroke();
+                fill(100);
+
+
+                textSize(100);
+                text(actions[keyIndex].toUpperCase(), 750, 390);
+                textSize(30);
+                text('Press the desired key for:', 750, 285);
+                text('Current: ' + settings.inputName[actions[keyIndex]], 750, 455);
+                textSize(20);
+                text(`(Press ESCAPE to skip)`, 750, 525);
+
+                text(name, 750, 550);
+
+                pop();
+
+                if(keyIsPressed) {
+                    if(!keyDown) {
+
+                        keyDown = true;
+                        if(keyCode != 27) {
+                            settingsHandler.modifyInput(actions[keyIndex], keyCode, keyName);
+                        }
+
+                        keyIndex++;
+                        if (keyIndex >= actions.length) {
+                            
+                            //Return to the main update function.
+                            MenuState.update = pastUpdate;
+
+                            //Remove the event function.
+                            window.onkeydown = null;
+                        }
+                    }
+                }
+                else {
+                    keyDown = false;
+                }
+            };
+        }
+        MenuState.contextualText = "Rebind game inputs.";
     }
 
     //#endregion
@@ -287,4 +349,4 @@ let MenuState =
 
             pop(); //Revert to the previous drawing and position settings.
         }
-         */
+*/

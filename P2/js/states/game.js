@@ -2,16 +2,13 @@
 /**
  * Game state where the player can navigate levels.
  */
-let PlayingState =
+let GameState =
 {
     //Tracks if the game is paused or not.
     playing: false,
 
     //Tracks if the player has cleared the level.
     cleared: false,
-
-    //Tracks which level is playing.
-    level: 1,
 
     //Tracks how long the player takes to complete a level.
     timer: 0,
@@ -23,25 +20,8 @@ let PlayingState =
     /**
      * Sets the player to the start of the level.
      */
-    setup() {
-        //Unlocks the analyzers from 'currentMusic' as it's switching track.
-        //Not doing so causes the analyzers to stop working entirely.
-        freqAnalyzer.setInput();
-        ampAnalyzer.setInput();
-
-        //Stop any currently playing music.
-        currentMusic.stop();
-        //Switch the current track to the playing state music.
-        currentMusic = gameMusic;
-        //Make the current track loop.
-        currentMusic.loop();
-
-        //Change the index of the music name accordingly.
-        currentMusicIndex = 1;
-
-        //Sets the music as the input source. (Makes them ignore all other sounds, if any.)
-        freqAnalyzer.setInput(currentMusic);
-        ampAnalyzer.setInput(currentMusic);
+    setup(level) {
+        music.setTrack(gameMusic);
 
         //
         Entity.current = [
@@ -117,7 +97,7 @@ let PlayingState =
 
         //ENTITIES
         //Display all entities.
-        Entity.displayAll();
+        Entity.displayAll(Entity.current);
 
 
         //PLATFORMS

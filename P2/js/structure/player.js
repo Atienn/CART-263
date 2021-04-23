@@ -368,7 +368,7 @@ let Player =
         push(); //We don't want to keep these drawing settings.
 
         //Makes the stroke white, its thickness dependent on the amplitude level.
-        strokeWeight(2 + ampCurrent * 5);
+        strokeWeight(2 + music.ampCurrent * 5);
         stroke(100);
 
         //Make the player circle's fill dependent on the dash cooldown. Also add 40 to the brightness

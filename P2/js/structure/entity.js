@@ -111,7 +111,7 @@ class Entity {
         stroke(0);
         strokeWeight(2);
         fill(0, 100, 100);
-        triangle(this.pos.x - this.w, this.pos.y, this.pos.x + this.w, this.pos.y, this.pos.x, this.pos.y - (this.h + ampCurrent*10));
+        triangle(this.pos.x - this.w, this.pos.y, this.pos.x + this.w, this.pos.y, this.pos.x, this.pos.y - (this.h + music.ampCurrent*10));
     }
 
     static yellowCircle() {
@@ -167,8 +167,11 @@ class StateEntity extends Entity {
         return this.state;
     }
 
+    /**  */
     static rectCheckOnce(target) {
-
+        if(misc.rectCheck(target.pos, this.pos, this.w, this.h)) {
+            return !this.state;
+        }
     }
     
     //#endregion
@@ -176,7 +179,7 @@ class StateEntity extends Entity {
 
     //#region DISPLAY
 
-    static textButton() {
+    static menuButton() {
         stroke(100);
         strokeWeight(5);
         fill(this.state ? 25 : 0);
@@ -190,6 +193,23 @@ class StateEntity extends Entity {
         rectMode(CENTER);
         textSize(50);
         text(this.mod, this.pos.x + 52.5, this.pos.y, this.w * 2, this.h * 2);
+    }
+
+    static textButton() {
+        noStroke();
+
+        fill(this.state ? 25 : 0);
+        rect(this.pos.x, this.pos.y, this.w, this.h);
+
+        noStroke();
+        fill(100);
+
+        //For some reason, setting rectMode to RADIUS makes text bounding boxes
+        //act as if they're in rectMode CORNER. So we manually need to work around this.
+        rectMode(CENTER);
+        textSize(20);
+        textAlign(CENTER, BASELINE);
+        text(this.mod, this.pos.x, this.pos.y + this.h / 2);
     }
 
     static arrowButton() {

@@ -25,7 +25,21 @@ function resetSettings()
             //Actions
             jump: 32,       // SPACE
             dash: 90,       // Z
-            restart: 82     // R
+            restart: 82,    // R
+        },
+
+        //Name of user input.
+        inputName: {
+            //Movement
+            up: "ArrowUp",
+            down: "ArrowDown",
+            left: "ArrowLeft",
+            right: "ArrowRight",
+
+            //Actions
+            jump: "Space",
+            dash: "KeyZ",
+            restart: "KeyR"
         }
     }
 
@@ -89,8 +103,9 @@ let settingsHandler = {
         }
     },
 
-    modifyInput(action, keyCode) {
+    modifyInput(action, keyCode, keyName) {
         settings.input[action] = keyCode;
+        settings.inputName[action] = keyName;
     }
 }
 

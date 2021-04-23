@@ -8,6 +8,7 @@ The goal is to navigate pre-made levels in the shortest amount of time possible.
 All music used is royalty-free.
 ************** */
 
+
 //#region Structure
 
 //Tracks which state the game is in.
@@ -25,12 +26,13 @@ let mouse = {
 
     /** Draws a custom '+' cursor at the mouse position that 'beats' with the music. */
     display() {
-        rect(this.pos.x, this.pos.y, 10 + ampCurrent * 10, 1 + ampCurrent);
-        rect(this.pos.x, this.pos.y, 1 + ampCurrent, 10 + ampCurrent * 10);
+        rect(this.pos.x, this.pos.y, 10 + music.ampCurrent * 10, 1 + music.ampCurrent);
+        rect(this.pos.x, this.pos.y, 1 + music.ampCurrent, 10 + music.ampCurrent * 10);
     }
 }
 
 //#endregion
+
 
 //#region Display
 
@@ -44,36 +46,22 @@ let hueChange = 140;
 //Holds the music currently playing.
 let currentMusic;
 
+//Tracks how much to offset the camera's view from the player's position.
+let camOffset = new Vector2D(0,0);
+
 //#endregion
+
 
 //#region  Music
 
 //Holds the music played in levels.
 let gameMusic;
 
-//Holds the music played in the menu.
-let menuMusic;
-
 //Holds the name of all music used.
 let musicNames = ['AIRGLOW - Blueshift','INTL.CMD - Sunset City']
 
-//Holds the index of the currently playing music in the 'musicNames' array.
-let currentMusicIndex;
-
-//Tracks how much to offset the camera's view from the player's position.
-let camOffset = new Vector2D(0,0);
-
-//Is used to measure the level of multiple frequecies as 'music' plays out.
-let freqAnalyzer;
-//Holds the level of each frequency measured for the current frame.
-let freqsCurrent = 0;
-
-//Is used to meansure the amplitude level as 'music' plays out.
-let ampAnalyzer;
-//Holds the amplitude level measured for the current frame.
-let ampCurrent = 0;
-
 //#endregion
+
 
 //Disables p5 friendly errors and possibly leads to a performance boost.
 p5.disableFriendlyErrors = true;
@@ -86,7 +74,9 @@ p5.disableFriendlyErrors = true;
 function preload()
 {
     //Since loading a sound file is asynchronous, placing it in 'preload()' prevents the program from continuing until it's done.
-    menuMusic = loadSound('assets/sounds/AIRGLOW - Blueshift.mp3')
+    MenuState.trackName = 'AIRGLOW - Blueshift';
+    MenuState.track = music.loadTrack(MenuState.trackName);
+
     gameMusic = loadSound('assets/sounds/INTL.CMD - Sunset City.mp3');
 
     //Get locally stored settings data if any is available.
@@ -131,15 +121,15 @@ function setup()
 
     //Give the current track an abstract sound file so that analyzers can connect to it and to
     //allow it to be stopped and switched to something else when calling the first 'state.setup()'.
-    currentMusic = new p5.SoundFile();
+    music.currentTrack = new p5.SoundFile();
 
     //Creates a FFT object with large smoothing and 128 output frequencies.
     //Here, smoothing means that the returned level of frequecies will rise and fall slower, appearing smoother.
-    freqAnalyzer = new p5.FFT(0.75, 128);
+    music.freqAnalyzer = new p5.FFT(0.75, 128);
 
     //Create an Amplitude object with little smoothing.
-    ampAnalyzer = new p5.Amplitude();
-    ampAnalyzer.smooth(0.1);
+    music.ampAnalyzer = new p5.Amplitude();
+    music.ampAnalyzer.smooth(0.1);
 
     //Allows the music to start.
     userStartAudio();
@@ -170,9 +160,9 @@ function draw()
         mouse.pos.Set(mouseX, mouseY);
 
         //Measure the level of amplitude and send it to the amplitude variable.
-        ampCurrent = ampAnalyzer.getLevel();
+        music.ampCurrent = music.ampAnalyzer.getLevel();
         //Measures the level of frequencies and sends them to the frequency array.
-        freqsCurrent = freqAnalyzer.analyze();
+        music.freqCurrent = music.freqAnalyzer.analyze();
 
         //Call the game state's update function.
         state.update();
@@ -185,19 +175,16 @@ function draw()
         //by only checking for it, we can have behaviour happen both on 'MenuState' and 'PlayingState' pause.
         
         //Either on menu or on pause, display the name and artist of the currently playing music on the bottom-right.
-        if(!PlayingState.playing)
+        if(!GameState.playing)
         {
             push(); //We don't want to keep the following text settings.
 
             textAlign(RIGHT, CENTER); //Align text to the right-center.
             textSize(15); //Reduce the text size.
-            text(`Currently Playing:\n${musicNames[currentMusicIndex]}`, width - 5, height - 20); //Give credit to the artist.
+            text(`Currently Playing:\n${music.currentTrackName}`, width - 5, height - 20); //Give credit to the artist.
 
             pop(); //Revert to the previous text settings.
         }
-
-        //Draw the cursor.
-        mouse.display();
 
         //If the window wasn't focused last frame, then the cursor was enabled. Disables it. 
         if(!wasFocused)
