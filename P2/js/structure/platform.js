@@ -125,27 +125,27 @@ class Platform
         strokeWeight(2); //Make the line thicker.
 
         //Translates the platfroms to be drawn from the player's perspective.
-        translate((width/2) - Player.pos.x - camOffset.x, (height/1.5) - Player.pos.y - camOffset.y);
+        //translate((width/2) - Player.pos.x - camOffset.x, (height/1.5) - Player.pos.y - camOffset.y);
 
         //Go through the elements of the ground array and diplay each.
-        for(let i = 0; i < this.allG.length; i++)
+        for(let i = 0; i < this.currG.length; i++)
         {
-            this.allG[i].display();
+            this.currG[i].display();
         }
         //Go through the elements of the ceiling array and diplay each.
-        for(let i = 0; i < this.allC.length; i++)
+        for(let i = 0; i < this.currC.length; i++)
         {
-            this.allC[i].display();
+            this.currC[i].display();
         }
         //Go through the elements of the left wall array and diplay each.
-        for(let i = 0; i < this.allL.length; i++)
+        for(let i = 0; i < this.currL.length; i++)
         {
-            this.allL[i].display();
+            this.currL[i].display();
         }
         //Go through the elements of the right wall array and diplay each.
-        for(let i = 0; i < this.allR.length; i++)
+        for(let i = 0; i < this.currR.length; i++)
         {
-            this.allR[i].display();
+            this.currR[i].display();
         }
 
         //Revert to the previous drawing settings.
@@ -171,28 +171,18 @@ class Platform
 
     //#region Arrays
 
+    static currG = [];
+    static currC = [];
+    static currL = [];
+    static currR = [];
+    
+
     //In order to prevent some tunneling (passing through walls) bug, the platforms
     //are made slightly longer.
 
 
     //TEST LEVEL
     
-    static allG = [
-        new Platform(1100, 175, 1025, false),
-        new Platform(900, 1000, 1525, false)
-    ]
-    static allC = [
-        new Platform(400, 175, 1525, false)
-    ]
-    static allL = [
-        new Platform(200, 375, 1125, true)
-    ]
-    static allR = [
-        new Platform(1000, 900, 1125, true),
-        new Platform(1500, 375, 925, true)
-    ]
-
-
     //LEVEL 1
 
     /** Holds all ground platforms. */

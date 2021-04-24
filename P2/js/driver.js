@@ -51,18 +51,6 @@ let camOffset = new Vector2D(0,0);
 
 //#endregion
 
-
-//#region  Music
-
-//Holds the music played in levels.
-let gameMusic;
-
-//Holds the name of all music used.
-let musicNames = ['AIRGLOW - Blueshift','INTL.CMD - Sunset City']
-
-//#endregion
-
-
 //Disables p5 friendly errors and possibly leads to a performance boost.
 p5.disableFriendlyErrors = true;
 
@@ -74,15 +62,18 @@ p5.disableFriendlyErrors = true;
 function preload()
 {
     //Since loading a sound file is asynchronous, placing it in 'preload()' prevents the program from continuing until it's done.
-    MenuState.trackName = 'AIRGLOW - Blueshift';
+    //Load the track of the menu.
     MenuState.track = music.loadTrack(MenuState.trackName);
 
-    gameMusic = loadSound('assets/sounds/INTL.CMD - Sunset City.mp3');
+    //Load the track of every level.
+    Level.list.forEach(level => {
+        level.track = music.loadTrack(level.trackName);
+    });
 
     //Get locally stored settings data if any is available.
     settings = JSON.parse(localStorage.getItem(`P1:Settings`));
     //If said data doesn't exist yet, create a new settings object with default values.
-    if(!settings) { resetSettings(); }
+    if(!settings) { settingsHandler.resetSettings(); }
 }
 
 /**
@@ -171,21 +162,6 @@ function draw()
         mouse.click = false;
 
 
-        //Since 'playing' is defined as false and needs to be set to false for the player to return to menu,
-        //by only checking for it, we can have behaviour happen both on 'MenuState' and 'PlayingState' pause.
-        
-        //Either on menu or on pause, display the name and artist of the currently playing music on the bottom-right.
-        if(!GameState.playing)
-        {
-            push(); //We don't want to keep the following text settings.
-
-            textAlign(RIGHT, CENTER); //Align text to the right-center.
-            textSize(15); //Reduce the text size.
-            text(`Currently Playing:\n${music.currentTrackName}`, width - 5, height - 20); //Give credit to the artist.
-
-            pop(); //Revert to the previous text settings.
-        }
-
         //If the window wasn't focused last frame, then the cursor was enabled. Disables it. 
         if(!wasFocused)
         {
@@ -195,6 +171,7 @@ function draw()
             noCursor();
         }
     }
+
     //If the window was in focus last frame, enable the cursor and display a message.
     else if(wasFocused)
     {
@@ -247,10 +224,9 @@ resizeCanvas(windowWidth, windowHeight);
 
 
 /** Safely switches to a new state by calling it's setup function first. */
-function switchState(newState)
-{
+function switchState(newState, level = null) {
     state = newState;
-    newState.setup();
+    newState.setup(level);
 }
 
 
@@ -318,10 +294,6 @@ function changeHue(value)
 }
 
 
-/** Function specifying doing nothing. */
-function none() { }
-
-
 /**
  * Quits the page, either by sending them somewhere 
  * in thier history, or by closing the page.
@@ -329,7 +301,7 @@ function none() { }
  function quit() {
 
     //Force saving settings before exiting.
-    saveSettings();
+    settingsHandler.saveSettings();
 
     //Try to send the user to the previous page in their history.
     window.history.back();

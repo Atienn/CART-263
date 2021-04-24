@@ -57,19 +57,11 @@ class Entity {
 
     /** Displays all of the current entities. */
     static displayAll(arr) {
-
-        //Translates the platfroms to be drawn from the player's perspective.
-        //Should be moved outside of this function as to only be called once per draw() (for both platforms & entities).
-        //translate((width/2) - Player.pos.x - camOffset.x, (height/1.5) - Player.pos.y - camOffset.y);
-        
         arr.forEach(entity => {
             push();
             entity.display();
             pop();
         });
-
-        //Temporary. Terrible practice.
-        //translate(-((width/2) - Player.pos.x - camOffset.x), -((height/1.5) - Player.pos.y - camOffset.y));
     }
 
 
@@ -126,7 +118,12 @@ class Entity {
         strokeWeight(2);
         textSize(20);
         textAlign(CENTER);
-        text(this.mod, this.pos.x, this.pos.y, this.w, this.h);
+
+        //For some reason, setting rectMode to RADIUS makes text bounding boxes
+        //act as if they're in rectMode CORNER. So we manually need to work around this.
+        rectMode(CENTER);
+
+        text(this.mod, this.pos.x, this.pos.y, this.w * 2, this.h * 2);
     }
 
     //#endregion

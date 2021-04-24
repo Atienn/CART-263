@@ -11,7 +11,7 @@ let music = {
     //Tracks the reference to the currently playing track.
     currentTrack: undefined,
     //Holds the name of the currently playing track.
-    currentTrackName: 'Nonthing',
+    currentTrackName: 'Nothing',
 
     //Is used to measure the level of multiple frequecies as 'music' plays out.
     freqAnalyzer: undefined,
@@ -27,8 +27,8 @@ let music = {
     /**
      * 
      */
-    loadTrack(fileName) {
-        return loadSound(musicLocation + fileName + musicExt);
+    loadTrack(trackName) {
+        return loadSound(musicLocation + trackName + musicExt);
     },
 
 
@@ -54,5 +54,19 @@ let music = {
         //Sets the music as the input source. (Makes them ignore all other sounds, if any.)
         this.freqAnalyzer.setInput(this.currentTrack);
         this.ampAnalyzer.setInput(this.currentTrack);
+    },
+
+
+    /**
+     * Shows the name of the track playing at the bottom of the screen.
+     */
+    displayCurrTrack() {
+        push(); //We don't want to keep the following text settings.
+
+        textAlign(RIGHT, CENTER); //Align text to the right-center.
+        textSize(15); //Reduce the text size.
+        text(`Currently Playing:\n${music.currentTrackName}`, width - 5, height - 20); //Give credit to the artist.
+
+        pop(); //Revert to the previous text settings.
     }
 }

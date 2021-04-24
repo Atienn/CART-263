@@ -7,7 +7,7 @@ let MenuState =
 {
     //Menu music.
     track: undefined,
-    trackName: "",
+    trackName: "AIRGLOW - Blueshift",
 
     //Tracks what text should be displayed to ???
     contextualText: "",
@@ -152,6 +152,9 @@ let MenuState =
 
         Entity.displayAll(this.menuButtons);
 
+        //Display current track.
+        music.displayCurrTrack();
+
         //Draw the cursor.
         mouse.display();
 
@@ -171,7 +174,8 @@ let MenuState =
 
     playSelect() {
         if(mouse.click) {
-            switchState(GameState);
+            //Temporary manual assignment.
+            switchState(GameState, Level.list[0]);
         }
         MenuState.contextualText = "Start playing. Adjusting settings first is recommended.";
     },
@@ -230,7 +234,7 @@ let MenuState =
             let keyName = 'none';
             
             //Get the name of the key on
-            window.onkeydown = () => {
+            window.onkeydown = (event) => {
                 keyName = event.code;
             }
 

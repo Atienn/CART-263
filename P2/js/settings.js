@@ -1,56 +1,58 @@
 "use strict";
 
 /** Overrides current user data (if any) with an empty user list. */
-function resetSettings()
-{
-    settings = {
-
-        //Tracks the pixel density of the canvas.
-        //Lower numbers means a blurrier image, but faster performance.
-        //To avoid floating point error, we use interger numbers and divide by 10 afterwards.
-        density: 20,
-
-        //Tracks the master volume of the game.
-        //To avoid floating point error, we use interger numbers and divide by 10 afterwards.
-        volume: 1,
-
-        //User input.
-        input: {
-            //Movement
-            up: 38,         // UP ARROW
-            down: 40,       // DOWN ARROW
-            left: 37,       // LEFT ARROW
-            right: 39,      // RIGHT ARROW
-
-            //Actions
-            jump: 32,       // SPACE
-            dash: 90,       // Z
-            restart: 82,    // R
-        },
-
-        //Name of user input.
-        inputName: {
-            //Movement
-            up: "ArrowUp",
-            down: "ArrowDown",
-            left: "ArrowLeft",
-            right: "ArrowRight",
-
-            //Actions
-            jump: "Space",
-            dash: "KeyZ",
-            restart: "KeyR"
-        }
-    }
-
-    settingsHandler.saveSettings();
-}
+//function 
 
 
 let settingsHandler = {
     
     saveSettings() {
         localStorage.setItem(`P1:Settings`, JSON.stringify(settings));
+    },
+    
+    resetSettings()
+    {
+        settings = {
+    
+            //Tracks the pixel density of the canvas.
+            //Lower numbers means a blurrier image, but faster performance.
+            //To avoid floating point error, we use interger numbers and divide by 10 afterwards.
+            density: 20,
+    
+            //Tracks the master volume of the game.
+            //To avoid floating point error, we use interger numbers and divide by 10 afterwards.
+            volume: 1,
+    
+            //User input.
+            input: {
+                //Movement
+                up: 38,         // UP ARROW
+                down: 40,       // DOWN ARROW
+                left: 37,       // LEFT ARROW
+                right: 39,      // RIGHT ARROW
+    
+                //Actions
+                jump: 32,       // SPACE
+                dash: 90,       // Z
+                restart: 82,    // R
+            },
+    
+            //Name of user input.
+            inputName: {
+                //Movement
+                up: "ArrowUp",
+                down: "ArrowDown",
+                left: "ArrowLeft",
+                right: "ArrowRight",
+    
+                //Actions
+                jump: "Space",
+                dash: "KeyZ",
+                restart: "KeyR"
+            }
+        }
+    
+        this.saveSettings();
     },
 
     densityUp() {
@@ -114,7 +116,7 @@ let settingsHandler = {
 //Saves settings browser storage (some browsers might choose not to execute this, though).
 window.onbeforeunload = () => {
     //Only save settngs they aren't undefined.
-    if (!(typeof settings == "undefined")) {
-      saveSettings();
+    if (!settings) {
+      this.saveSettings();
     }
 };

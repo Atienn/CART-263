@@ -1,5 +1,8 @@
 let misc = {
 
+    /** Function specifying doing nothing. */
+    none() { },
+
     rectCheck(pos, cen, w, h) {
         return (
             pos.x >= cen.x - w && 

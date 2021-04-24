@@ -82,15 +82,15 @@ let Player =
             if(this.vel.y > 0)
             {
                 //For every ground, check if there is collision.
-                for(let i = 0; i < Platform.allG.length; i++)
+                for(let i = 0; i < Platform.currG.length; i++)
                 {
                     //Check for collisions using the player's lower boundaries (bottom-left, bottom-right).
-                    if( Platform.allG[i].collisionCheck(new Vector2D(this.pos.x - 10, this.pos.y + 10), this.vel)
+                    if( Platform.currG[i].collisionCheck(new Vector2D(this.pos.x - 10, this.pos.y + 10), this.vel)
                         ||
-                        Platform.allG[i].collisionCheck(new Vector2D(this.pos.x + 10, this.pos.y + 10), this.vel) )
+                        Platform.currG[i].collisionCheck(new Vector2D(this.pos.x + 10, this.pos.y + 10), this.vel) )
                     {
                         //Anchor the player to the ground.
-                        this.pos.y = Platform.allG[i].pos - 10;
+                        this.pos.y = Platform.currG[i].pos - 10;
                         //Remove any vertical velocity.
                         this.vel.y = 0.1;
                         //Switch the player's state and last state to grounded.
@@ -111,15 +111,15 @@ let Player =
             else if (this.vel.y < 0)
             {
                 //For every ceiling, check if there is collision.
-                for(let i = 0; i < Platform.allC.length; i++)
+                for(let i = 0; i < Platform.currC.length; i++)
                 {
                     //Check for collisions using the player's upper boundary (top-left, top-right).
-                    if( Platform.allC[i].collisionCheck(new Vector2D(this.pos.x - 10, this.pos.y - 10), this.vel)
+                    if( Platform.currC[i].collisionCheck(new Vector2D(this.pos.x - 10, this.pos.y - 10), this.vel)
                         ||
-                        Platform.allC[i].collisionCheck(new Vector2D(this.pos.x + 10, this.pos.y - 10), this.vel) )
+                        Platform.currC[i].collisionCheck(new Vector2D(this.pos.x + 10, this.pos.y - 10), this.vel) )
                     {
                         //Bring the player back to where they collided with the ceiling.
-                        this.pos.y = Platform.allC[i].pos + 10;
+                        this.pos.y = Platform.currC[i].pos + 10;
                         //Remove and vertical velocity.
                         this.vel.y = 0;
 
@@ -143,15 +143,15 @@ let Player =
             if(this.vel.x > 0)
             {
                 //For every right wall, check if there is collision.
-                for(let i = 0; i < Platform.allR.length; i++)
+                for(let i = 0; i < Platform.currR.length; i++)
                 {
                     //Check for collisions using the player's right boundary (top-right, bottom-right).
-                    if( Platform.allR[i].collisionCheck(new Vector2D(this.pos.x + 10, this.pos.y - 10), this.vel)
+                    if( Platform.currR[i].collisionCheck(new Vector2D(this.pos.x + 10, this.pos.y - 10), this.vel)
                         ||
-                        Platform.allR[i].collisionCheck(new Vector2D(this.pos.x + 10, this.pos.y + 10), this.vel) )
+                        Platform.currR[i].collisionCheck(new Vector2D(this.pos.x + 10, this.pos.y + 10), this.vel) )
                     {
                         //Anchor the player to the wall.
-                        this.pos.x = Platform.allR[i].pos - 10;
+                        this.pos.x = Platform.currR[i].pos - 10;
                         //Keep the player on the wall with a small velocity to the right.
                         this.vel.x = 1;
 
@@ -179,15 +179,15 @@ let Player =
             else if(this.vel.x < 0)
             {
                 //For every left wall, check if there is collision.
-                for(let i = 0; i < Platform.allL.length; i++)
+                for(let i = 0; i < Platform.currL.length; i++)
                 {
                     //Check for collisions using the player's right boundary (top-left, bottom-left).
-                    if( Platform.allL[i].collisionCheck(new Vector2D(this.pos.x - 10, this.pos.y - 10), this.vel)
+                    if( Platform.currL[i].collisionCheck(new Vector2D(this.pos.x - 10, this.pos.y - 10), this.vel)
                         ||
-                        Platform.allL[i].collisionCheck(new Vector2D(this.pos.x - 10, this.pos.y + 10), this.vel) )
+                        Platform.currL[i].collisionCheck(new Vector2D(this.pos.x - 10, this.pos.y + 10), this.vel) )
                     {
                         //Anchor the player to the wall.
-                        this.pos.x = Platform.allL[i].pos + 10;
+                        this.pos.x = Platform.currL[i].pos + 10;
                         //Keep the player on the wall with a small velocity to the left.
                         this.vel.x = -1;
 

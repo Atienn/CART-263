@@ -20,19 +20,18 @@ let GameState =
     /**
      * Sets the player to the start of the level.
      */
-    setup(level) {
-        music.setTrack(gameMusic);
+    //De-structure the level object into its components.
+    setup({ platformArr, entityArr, track, trackName }) {
+        
+        music.setTrack(track, trackName);
+
+        Platform.currG = platformArr.g;
+        Platform.currC = platformArr.c;
+        Platform.currL = platformArr.l;
+        Platform.currR = platformArr.r;
 
         //
-        Entity.current = [
-            new Entity(new Vector2D(660, 750), 550, 200, Entity.whiteTextBox, Entity.rectCheck, none, 'These are the entities that have been added up to now.\n\nTriggerboxes and thier effects will be re-written as entities and added back soon.'),
-            new Entity(new Vector2D(400, 1000), 250, 100, Entity.whiteTextBox, Entity.rectCheck, none, 'These will be useful for creating a tutorial level.'),
-            new Entity(new Vector2D(400, 1150), 300, 100, Entity.whiteTextBox, Entity.rectCheck, none, 'Textbox.'),
-            new Entity(new Vector2D(900, 1100), 50, 10, Entity.redTriangle, Entity.rectCheck, Entity.knockback, new Vector2D(0, -50)),
-            new Entity(new Vector2D(900, 1150), 100, 100, Entity.whiteTextBox, Entity.rectCheck, none, 'Jump pad.'),
-            new Entity(new Vector2D(660, 1000), 30, 30, Entity.yellowCircle, Entity.circleCheck, Entity.dashRefresh),
-            new Entity(new Vector2D(660, 1150), 200, 100, Entity.whiteTextBox, Entity.rectCheck, none, 'Dash refresh')
-        ];
+        Entity.current = entityArr;
 
         //Send 'hueChange' a quarter further into the spectrum.
         changeHue(90);
@@ -48,6 +47,7 @@ let GameState =
      * Is called once per 'draw()' when playing.
      */
     update() {
+
         //If the game is unpaused, then do boundary checks, player input/movement.
         if (this.playing) {
             //Check if the player is within a trigger box and potentially trigger an effect.
@@ -95,17 +95,27 @@ let GameState =
         //Display all trigger boxes.
         //TriggerBox.displayAll(TriggerBox.allL1);
 
+        //Store the current settings.
+        push();
+
+        //Translates the platfroms to be drawn from the player's perspective.
+        //Should be moved outside of this function as to only be called once per draw() (for both platforms & entities).
+        translate((width/2) - Player.pos.x - camOffset.x, (height/1.5) - Player.pos.y - camOffset.y);
+
         //ENTITIES
         //Display all entities.
         Entity.displayAll(Entity.current);
-
 
         //PLATFORMS
         //Display all platforms.
         Platform.displayAll();
 
+        //Revert the translate.
+        pop();
+
         //PLAYER
         Player.display();
+
 
         //TIMER
         //Display how many frames it has been since the player started in the top-left corner.
@@ -154,6 +164,9 @@ let GameState =
                 text('- Activate all switches.\n- Reach the end.', 875, 335); //Display objectives in the middle-right.
             }
             pop(); //Revert to the previous text drawing settings.
+
+            //Display current track.
+            music.displayCurrTrack();
 
 
             //Do the following after rendering because otherwise unpausing will result in a frame
