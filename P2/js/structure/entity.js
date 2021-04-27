@@ -165,9 +165,10 @@ class StateEntity extends Entity {
     }
 
     /**  */
-    static rectCheckOnce(target) {
+    static rectCheckToggle(target) {
         if(misc.rectCheck(target.pos, this.pos, this.w, this.h)) {
-            return !this.state;
+            this.state = !this.state;
+            return this.state;
         }
     }
     
@@ -177,46 +178,64 @@ class StateEntity extends Entity {
     //#region DISPLAY
 
     static menuButton() {
+        //Draw the 'body' of the button (black or light grey if the mouse if hovering over it) with a white outline.
         stroke(100);
         strokeWeight(5);
         fill(this.state ? 25 : 0);
         rect(this.pos.x, this.pos.y, this.w, this.h);
 
+        //Write white text inside the button.
         noStroke();
         fill(100);
-
         //For some reason, setting rectMode to RADIUS makes text bounding boxes
         //act as if they're in rectMode CORNER. So we manually need to work around this.
         rectMode(CENTER);
         textSize(50);
-        text(this.mod, this.pos.x + 52.5, this.pos.y, this.w * 2, this.h * 2);
+        text(this.mod, 52.5, this.pos.y);
     }
 
     static textButton() {
-        noStroke();
-
+        //Draw the 'body' of the button (black or light grey if the mouse if hovering over it).
         fill(this.state ? 25 : 0);
         rect(this.pos.x, this.pos.y, this.w, this.h);
 
-        noStroke();
+        //Write white text inside the button.
         fill(100);
-
         //For some reason, setting rectMode to RADIUS makes text bounding boxes
         //act as if they're in rectMode CORNER. So we manually need to work around this.
         rectMode(CENTER);
-        textSize(20);
+        textSize(this.h * 1.5);
         textAlign(CENTER, BASELINE);
         text(this.mod, this.pos.x, this.pos.y + this.h / 2);
     }
 
-    static arrowButton() {
+    static levelButton() {
+        //Draw a thin line at the bottom of the button.
+        stroke(100);
+        strokeWeight(2);
+        line(this.pos.x - this.w, this.pos.y + this.h, this.pos.x + this.w, this.pos.y + this.h);
+        
+        //Draw the 'body' of the button (black or light grey if the mouse if hovering over it).
         noStroke();
+        fill(this.state ? 25 : 0);
+        rect(this.pos.x, this.pos.y, this.w, this.h);
 
+        //Write white text inside the button.
+        fill(100);
+        //For some reason, setting rectMode to RADIUS makes text bounding boxes
+        //act as if they're in rectMode CORNER. So we manually need to work around this.
+        rectMode(CENTER);
+        textSize(this.h * 1.5);
+        textAlign(LEFT, BASELINE);
+        text(this.mod.name, (this.pos.x - 0.8 * this.w), this.pos.y + this.h / 2);
+    }
+
+    static arrowButton() {
+        //Draw the 'body' of the button (black or light grey if the mouse if hovering over it).
         fill(this.state ? 25 : 0);
         rect(this.pos.x, this.pos.y, this.w, this.h);
 
         fill(100);
-
         let w2 = this.w / 2;
         let h2 = this.h / 2;
 

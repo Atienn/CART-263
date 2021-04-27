@@ -6,7 +6,7 @@
 let MenuState = 
 {
     //Menu music.
-    track: undefined,
+    track: null,
     trackName: "AIRGLOW - Blueshift",
 
     //Tracks what text should be displayed to ???
@@ -15,9 +15,14 @@ let MenuState =
     //Tracks if the settings panel is active.
     settingsPanel: false,
 
+    //Tracks if the level panel is active.
+    levelPanel: false,
+
     //
     menuButtons: [],
+    levelButtons: [],
     settingsButtons: [],
+
 
     /**
      * Switch to the menu music, disables the settings panel and switches the state.
@@ -33,24 +38,33 @@ let MenuState =
             new StateEntity(new Vector2D(297.5, 625), 300, 50, StateEntity.menuButton, StateEntity.rectCheckHold, this.quitSelect, 'QUIT')
         ];
 
+        //
         this.settingsButtons = [
             new StateEntity(new Vector2D(1265, 635), 70, 15, StateEntity.textButton, StateEntity.rectCheckHold, this.rebindSelect, 'REBIND'),
             new StateEntity(new Vector2D(1270, 482.5), 20, 15, StateEntity.arrowButton, StateEntity.rectCheckHold, this.densityUpSelect, true),
             new StateEntity(new Vector2D(1320, 482.5), 20, 15, StateEntity.arrowButton, StateEntity.rectCheckHold, this.densityDownSelect, false),
             new StateEntity(new Vector2D(1270, 557.5), 20, 15, StateEntity.arrowButton, StateEntity.rectCheckHold, this.volumeUpSelect, true),
             new StateEntity(new Vector2D(1320, 557.5), 20, 15, StateEntity.arrowButton, StateEntity.rectCheckHold, this.volumeDownSelect, false)  
-        ]
+        ];
+
+        //Create a button for each level.
+        for (let i = 0; i < Level.list.length; i++) {
+            this.levelButtons.unshift(
+                new StateEntity(new Vector2D(1065, 410 + (i * 50)), 275, 17.5, StateEntity.levelButton, StateEntity.rectCheckHold, this.launchLevel, Level.list[i])
+            );
+        }
 
         //Send 'hueChange' a quarter further into the spectrum.
         changeHue(90);
 
-        //Start with the settings panel closed.
+        //Start with the level select and settings panel closed.
+        this.levelPanel = false;
         this.settingsPanel = false;
     },
 
     /**
      * Does relevant behaviour if the user clicks on a button or hovers over it.
-     * Displays an image of a title, three large buttons and a potential settings panel.
+     * Displays an image of a title, three large buttons and a level select / settings panel.
      * Is called one per 'draw()' when on the menu.
      */
     update()
@@ -74,15 +88,39 @@ let MenuState =
         //We don't want to keep the following drawing settings.
         push();
 
-        //Makes rectangles drawn from the corner, simplying things in our case.
-        //Useless since of text behaves like CORNER when in RADIUS.
-        //rectMode(CORNER);
 
+        //LEVEL SELECT PANEL
+
+        //Render the level select panel if it's active.
+        if(this.levelPanel)  {
+            Entity.checkAll(mouse, this.levelButtons);
+
+            //Makes the rectangle's fill white.
+            stroke(100);
+            strokeWeight(5);
+
+            //Switch back to the previous fill.
+            fill(0);
+            //Draw the body of the window.
+            rect(1065, 500, 295, 190);
+
+            noStroke();
+
+            //Make the following text white.
+            fill(100);
+
+            //Increase the text size.
+            textSize(40);
+            //Write the title of the panel.
+            text('LEVEL SELECT', 785, 350);
+
+            Entity.displayAll(this.levelButtons);
+        }
 
         //SETTINGS PANEL
-
+    
         //If the settings panel is active, render it.
-        if(this.settingsPanel)
+        else if(this.settingsPanel)
         {
             Entity.checkAll(mouse, this.settingsButtons);
             
@@ -164,8 +202,9 @@ let MenuState =
 
     /** Free up memory used by the state before exiting. */
     exit() {        
-        this.menuButtons = null;
-        this.settingsButtons = null;
+        this.menuButtons = [];
+        this.levelButtons = [];
+        this.settingsButtons = [];
         this.contextualText = "";
     },
 
@@ -174,14 +213,25 @@ let MenuState =
 
     playSelect() {
         if(mouse.click) {
-            //Temporary manual assignment.
-            switchState(GameState, Level.list[0]);
+            //Disable the settings panel if it's active and activate the level select one.
+            MenuState.settingsPanel = false;
+            MenuState.levelPanel = !MenuState.levelPanel;
         }
-        MenuState.contextualText = "Start playing. Adjusting settings first is recommended.";
+        MenuState.contextualText = "Select a level. Adjusting settings first is recommended.";
+    },
+
+    launchLevel() {
+        if(mouse.click) {
+            switchState(GameState, this.mod);
+        }
+        MenuState.contextualText = "Start playing.";
     },
 
     settingSelect() {
         if(mouse.click) {
+
+            //Disable the level select panel if it's active and activate the settings one.
+            MenuState.levelPanel = false;
             MenuState.settingsPanel = !MenuState.settingsPanel;
         }
         MenuState.contextualText = "Adjust inputs, audio volume or pixel density.";

@@ -225,6 +225,7 @@ resizeCanvas(windowWidth, windowHeight);
 
 /** Safely switches to a new state by calling it's setup function first. */
 function switchState(newState, level = null) {
+    state.exit();
     state = newState;
     newState.setup(level);
 }

@@ -17,13 +17,19 @@ let GameState =
     //Dims the background.
     dim: 0,
 
+    restartPos: null,
+    objectiveText: "",
+
     /**
      * Sets the player to the start of the level.
      */
     //De-structure the level object into its components.
-    setup({ platformArr, entityArr, track, trackName }) {
+    setup({ startPos, objText, platformArr, entityArr, track, trackName }) {
         
         music.setTrack(track, trackName);
+
+        this.restartPos = startPos;
+        this.objectiveText = objText
 
         Platform.currG = platformArr.g;
         Platform.currC = platformArr.c;
@@ -154,20 +160,20 @@ let GameState =
 
                 textSize(60); //Reduce the text size.
 
-                text('CONTROLS', 50, 240); //Display a header in the middle-left.
-                text('OBJECTIVE', 800, 240); //Display another header in the middle-right.
+                text('OBJECTIVE', 50, 240); //Display a header in the middle-left.
                 text('Press ENTER to return to menu.\nPress any other key to resume.', 50, 660); //Display instructions to quit/resume at the bottom.
 
                 textSize(40); //Reduce the text size again.
-
-                text('- ARROW KEYS to move.\n- SPACE to jump.\n- Z to dash.\n- R to retry.\n- ESCAPE to pause.', 75, 405); //Display controls in the middle-left.
-                text('- Activate all switches.\n- Reach the end.', 875, 335); //Display objectives in the middle-right.
+                textAlign(LEFT, TOP);
+                text(this.objectiveText, 75, 300); //Display objectives in the middle-left.s
             }
             pop(); //Revert to the previous text drawing settings.
 
             //Display current track.
             music.displayCurrTrack();
 
+            //Display the cursor.
+            mouse.display();
 
             //Do the following after rendering because otherwise unpausing will result in a frame
             //of delay between removal of the pause overlay and player input being recorded.
@@ -212,20 +218,11 @@ let GameState =
         //Reset the timer to 0.
         this.timer = 0;
 
-        //TEST LEVEL POSITION
-        Player.pos.x = 1250;
-        Player.pos.y = 800;
-
-        /* LEVEL 1 POSITION
-        //Sets the player to their initial position (150, 1500).
-        Player.pos.x = 125;
-        Player.pos.y = 1575;
-        */
-
+        //Reset the player's position.
+        Player.pos.Get(this.restartPos);
 
         //Don't carry over any previous velocity.
-        Player.vel.x = 0;
-        Player.vel.y = 0;
+        Player.vel.Set(0,0);
 
         //Give the player their dash back if they didn't have it.
         Player.dash = true;
@@ -235,6 +232,18 @@ let GameState =
         Player.lastState = 1;
         Player.lastStateTimer = 5;
     },
+
+    exit() {
+        this.objectiveText = "";
+        this.restartPos = null;
+
+        Platform.currC = null;
+        Platform.currG = null;
+        Platform.currL = null;
+        Platform.currR = null;
+
+        Entity.current = null;
+    }
 
     /*
     tryActivateGoal() {
