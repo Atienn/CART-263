@@ -45,8 +45,8 @@ let Player =
 
         //Mimicks friction - If their velocity isn't 0, slows the player down by 7.5%.
         //For the x direction, add 5% of extra friction if there is no input (makes braking faster).
-        if(this.vel.x !== 0) { this.vel.x = moveTowards(this.vel.x, 0, Math.abs(0.075 * this.vel.x) + 0.5*(this.velAdd.x === 0)); }
-        if(this.vel.y !== 0) { this.vel.y = moveTowards(this.vel.y, 0, 0.075 * this.vel.y); }
+        if(this.vel.x !== 0) { this.vel.x = misc.moveTowards(this.vel.x, 0, Math.abs(0.075 * this.vel.x) + 0.5*(this.velAdd.x === 0)); }
+        if(this.vel.y !== 0) { this.vel.y = misc.moveTowards(this.vel.y, 0, 0.075 * this.vel.y); }
 
         //The position the player had last frame is now thier last position.
         this.lastPos.x = this.pos.x;
@@ -226,8 +226,8 @@ let Player =
         else { camOffset.x -= 2.5; }
 
         //Makes the camera return back to a centered view when there's no input (still will be offset form the player orientation).
-        if(camOffset.x !== 0) { camOffset.x = moveTowards(camOffset.x, 0, 0.05 * camOffset.x); }
-        if(camOffset.y !== 0) { camOffset.y = moveTowards(camOffset.y, 0, 0.05 * camOffset.y); }
+        if(camOffset.x !== 0) { camOffset.x = misc.moveTowards(camOffset.x, 0, 0.05 * camOffset.x); }
+        if(camOffset.y !== 0) { camOffset.y = misc.moveTowards(camOffset.y, 0, 0.05 * camOffset.y); }
 
 
         //INPUTS
@@ -313,7 +313,7 @@ let Player =
                 this.lastStateTimer = 0;
             }
 
-            //If the player is ascending and hasn't used their dash, lengthen their jump.
+            //If the player is ascending or starting to descend, reduce gravity.
             else if(this.vel.y < 5)
             {
                 //Remove just under 1/2 of the gravity acceleration.

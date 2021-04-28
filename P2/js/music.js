@@ -70,3 +70,53 @@ let music = {
         pop(); //Revert to the previous text settings.
     }
 }
+
+
+//Code that was removed but might be re-implemented later.
+/*
+ //MUSIC VISUALIZER
+
+        //Creates the music visualizer which is a vignette effect 'beating' with the amplitude of the music.
+        //Display the music visualizer if the music is playing.
+        if(music.currentTrack.isPlaying())
+        {
+            //We don't want to keep these drawing settings.
+            push();
+
+
+            //BEATING VIGNETTE
+
+            //Set the size of the circle to scale with the size of the screen.
+            size = Math.hypot(width, height) - music.ampCurrent * 100;
+
+            //Offset everyting until the next pop() so that (0,0) is horizontally in the middle and
+            //vertically far below what's in view (just under half the beating circle's height).
+
+
+
+            //Makes a pattern within the beating circle going from dark to lighter shades.
+            //A multiple of the window's height is removed from the beating circle's size to restrain in to the bottom of the window.
+
+            //Draws a large, almost black circle at the point specified by translate above.
+            fill(0, 0, 10);
+            circle(0, 0, 1.03 * size);
+
+            //Draws a slightly smaller, slighly lighter circle at the same point.
+            fill(0, 0, 20);
+            circle(0, 0, 1.02 * size);
+
+            //Draws a slightly smaller, slighly lighter circle at the same point.
+            fill(0, 0, 25);
+            circle(0, 0, 1.01 * size);
+
+            //Draws a slightly smaller, slighly lighter circle at the same point.
+            fill(0, 0, 30);
+            circle(0, 0, 1 * size);
+
+            //Draws a slightly smaller, slighly lighter circle at the same point.
+            fill(0, 0, 35);
+            circle(0, 0, 0.99 * size);
+
+            pop(); //Revert to the previous drawing and position settings.
+        }
+*/

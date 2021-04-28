@@ -36,11 +36,13 @@ let GameState =
         Platform.currL = platformArr.l;
         Platform.currR = platformArr.r;
 
+
+
         //
         Entity.current = entityArr;
 
         //Send 'hueChange' a quarter further into the spectrum.
-        changeHue(90);
+        misc.changeHue(90);
 
         //Pause the game, resets the player's position, velocity, dash, state
         //and reset switches.
@@ -88,7 +90,7 @@ let GameState =
         //BACKGROUND
 
         //Ups the value of 'hueChange' by 0.1 (twice as much as in the menu state).
-        changeHue(0.1);
+        misc.changeHue(0.1);
 
         //Draw a background whose color changes with time and that briefly gets dimmer with if the player is teleported.
         background(hueChange, 100, 60 - this.dim);
@@ -97,15 +99,10 @@ let GameState =
         if (this.dim > 0) { this.dim--; }
 
 
-        //TRIGGER BOXES
-        //Display all trigger boxes.
-        //TriggerBox.displayAll(TriggerBox.allL1);
-
         //Store the current settings.
         push();
 
         //Translates the platfroms to be drawn from the player's perspective.
-        //Should be moved outside of this function as to only be called once per draw() (for both platforms & entities).
         translate((width/2) - Player.pos.x - camOffset.x, (height/1.5) - Player.pos.y - camOffset.y);
 
         //ENTITIES
@@ -119,13 +116,15 @@ let GameState =
         //Revert the translate.
         pop();
 
-        //PLAYER
+        //Display the player.
         Player.display();
 
 
         //TIMER
         //Display how many frames it has been since the player started in the top-left corner.
         text('TIME: ' + this.timer.toLocaleString(undefined, { minimumIntegerDigits: 5, useGrouping: false }), 5, 15);
+        //Temporary
+        text(`x: ${Player.pos.x.toFixed(1)}\ny: ${Player.pos.y.toFixed(1)}`, width - 100, 30);
 
 
         //PAUSE MENU
@@ -202,12 +201,13 @@ let GameState =
      * Called if the player presses 'ESCAPE'.
      */
     restart() {
-        //Reset all switches.
-        //Switch.reset(TriggerBox.S1);
 
-        //If there are any switches, since we just reset them, 
-        //the goal will be disabled with them.
-        //this.tryActivateGoal();
+        //Reset all entities to thier base state.
+        Entity.current.forEach(entity => {
+            if(entity.state) {
+                entity.state = false;
+            }
+        });
 
         //Pause the game.
         this.playing = false;

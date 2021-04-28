@@ -1,5 +1,3 @@
-"use strict";
-
 /**
  * Menu state of the program where the user can choose to quit, adjust settings or start playing.
  */
@@ -55,7 +53,7 @@ let MenuState =
         }
 
         //Send 'hueChange' a quarter further into the spectrum.
-        changeHue(90);
+        misc.changeHue(90);
 
         //Start with the level select and settings panel closed.
         this.levelPanel = false;
@@ -80,14 +78,13 @@ let MenuState =
         
 
         //Ups the value of 'hueChange' by 0.05.
-        changeHue(0.05);
+        misc.changeHue(0.05);
 
         //Draw a background with color dependent on time.
         background(hueChange, 100, 85);
 
         //We don't want to keep the following drawing settings.
         push();
-
 
         //LEVEL SELECT PANEL
 
@@ -177,7 +174,7 @@ let MenuState =
         //Reduce the text's size.
         textSize(40);
         //Write a subtitle.
-        text("A game about moving fast and making mistakes.", 60, 245);
+        text("A game about speed and improvement.", 60, 245);
 
         //Reduce the text size's further
         textSize(30);
@@ -248,14 +245,14 @@ let MenuState =
         if(mouse.click) {
             settingsHandler.densityUp();
         }
-        MenuState.contextualText = "Increase the pixel density.";
+        MenuState.contextualText = "Increase the canvas' pixel density.";
     },
 
     densityDownSelect() {
         if(mouse.click) {
             settingsHandler.densityDown();
         }
-        MenuState.contextualText = "Decrease the pixel density.";
+        MenuState.contextualText = "Decrease the canvas' pixel density.";
     },
     
     volumeUpSelect() {
@@ -349,58 +346,3 @@ let MenuState =
 
     //#endregion
 }
-
-
-//Code that was removed but might be re-implemented later.
-/*
-        //MUSIC VISUALIZER
-
-        //Creates the music visualizer which is a vignette effect 'beating' with the amplitude of the music.
-        //Display the music visualizer if the music is playing.
-        if(gameMusic.isPlaying())
-        {
-            //Measure the level of amplitude and send it to the amplitude variable.
-            ampCurrent = ampAnalyzer.getLevel();
-            //Measures the level of frequencies and sends them to the frequency array.
-            freqsCurrent = freqAnalyzer.analyze();
-
-            //We don't want to keep these drawing settings.
-            push();
-
-
-            //BEATING VIGNETTE
-
-            //Set the size of the circle to scale with the size of the screen.
-            size = Math.hypot(width, height) - ampCurrent * 100;
-
-            //Offset everyting until the next pop() so that (0,0) is horizontally in the middle and
-            //vertically far below what's in view (just under half the beating circle's height).
-
-
-
-            //Makes a pattern within the beating circle going from dark to lighter shades.
-            //A multiple of the window's height is removed from the beating circle's size to restrain in to the bottom of the window.
-
-            //Draws a large, almost black circle at the point specified by translate above.
-            fill(0, 0, 10);
-            circle(0, 0, 1.03 * size);
-
-            //Draws a slightly smaller, slighly lighter circle at the same point.
-            fill(0, 0, 20);
-            circle(0, 0, 1.02 * size);
-
-            //Draws a slightly smaller, slighly lighter circle at the same point.
-            fill(0, 0, 25);
-            circle(0, 0, 1.01 * size);
-
-            //Draws a slightly smaller, slighly lighter circle at the same point.
-            fill(0, 0, 30);
-            circle(0, 0, 1 * size);
-
-            //Draws a slightly smaller, slighly lighter circle at the same point.
-            fill(0, 0, 35);
-            circle(0, 0, 0.99 * size);
-
-            pop(); //Revert to the previous drawing and position settings.
-        }
-*/

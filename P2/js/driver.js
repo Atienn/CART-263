@@ -240,62 +240,6 @@ function mousePressed() { mouse.click = true; }
 
 
 /**
- * Shifts 'current' towards 'target' at a rate of 'change' making sure not to go over it.
- * Is called twice per draw().
- * @param {Number} current - the current value.
- * @param {Number} target - the target value.
- * @param {Number} change - the rate at which 'current' moves to 'target'.
- */
-function moveTowards(current, target, change)
-{
-    let isBigger;   //Tracks if the input is larger than the target.
-
-    //If the input is larger than the target, than set 'isBigger' appropriately and remove 'change' from 'current'.
-    if(current > target) 
-    {   
-        isBigger = true;
-        //Remove 'change' from current, disregarding if it's positive or not.
-        current -= Math.abs(change); 
-    }
-    //If the input is smaller than the target, than set 'isBigger' appropriately and add 'change' to 'current'.
-    else if (current < target) 
-    { 
-        isBigger = false;
-        //Add 'change' to current, disregarding if it's positive or not.
-        current +=  Math.abs(change); 
-    }
-
-    //Corrects the values of 'current' if it moved past 'target'.
-    //If 'target' was bigger and now isn't, then we've passed it.
-    //If 'target' was smaller and now isn't, then we've passed it.
-    if((isBigger && current < target) || (!isBigger && current > target))
-    {
-        //Corrects the value of 'current' (we wanted to stop at 'target').
-        current = target;
-    }
-
-    //Return the modified value.
-    return current;
-}
-
-
-/**
- * Ups the value of 'hueChange' by the specified amount making sure to
- * keep it within its 0-360 range.
- * 
- * @param {Number} value - The amount to add to 'hueChange'.
- */
-function changeHue(value)
-{
-    //Increase the hue by the specified amount
-    hueChange += value;
-
-    //If the hue is over its max value (360), remove 360 to make it loop around.
-    if(hueChange >= 360) { hueChange -= 360; }
-}
-
-
-/**
  * Quits the page, either by sending them somewhere 
  * in thier history, or by closing the page.
  */
