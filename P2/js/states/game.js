@@ -1,6 +1,7 @@
 
 /**
  * Game state where the player can navigate levels.
+ * Interprets level objects.
  */
 let GameState =
 {
@@ -17,28 +18,31 @@ let GameState =
     //Dims the background.
     dim: 0,
 
+    //Where to set the player when they restart.
     restartPos: null,
+    //The level's objectives.
     objectiveText: "",
 
     /**
-     * Sets the player to the start of the level.
+     * Sets up the level to be interpreted and starts.
      */
     //De-structure the level object into its components.
     setup({ startPos, objText, platformArr, entityArr, track, trackName }) {
-        
+
+        //Switch to the level's track.
         music.setTrack(track, trackName);
 
+        //Get the restart position and objectives.
         this.restartPos = startPos;
         this.objectiveText = objText
 
+        //Set the platforms as the 'current' ones.
         Platform.currG = platformArr.g;
         Platform.currC = platformArr.c;
         Platform.currL = platformArr.l;
         Platform.currR = platformArr.r;
 
-
-
-        //
+        //Set the entities as the 'current' ones.
         Entity.current = entityArr;
 
         //Send 'hueChange' a quarter further into the spectrum.
@@ -231,6 +235,7 @@ let GameState =
         Player.lastStateTimer = 5;
     },
 
+    /** Free up memory used by the state before exiting. */
     exit() {
         this.objectiveText = "";
         this.restartPos = null;
