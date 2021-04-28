@@ -123,8 +123,6 @@ let GameState =
         //TIMER
         //Display how many frames it has been since the player started in the top-left corner.
         text('TIME: ' + this.timer.toLocaleString(undefined, { minimumIntegerDigits: 5, useGrouping: false }), 5, 15);
-        //Temporary
-        text(`x: ${Player.pos.x.toFixed(1)}\ny: ${Player.pos.y.toFixed(1)}`, width - 100, 30);
 
 
         //PAUSE MENU
@@ -244,26 +242,4 @@ let GameState =
 
         Entity.current = null;
     }
-
-    /*
-    tryActivateGoal() {
-        //Tracks if the goal should activate or not.
-        //Assume that all switches are active.
-        let value = true;
-
-        //For each switch in the array, check if it is active. If it isn't, don't let the goal activate.
-        for (let i = 0; i < TriggerBox.S1.length; i++) {
-            //If the switch is inactive then the goal should stay inactive as well.
-            if (!TriggerBox.S1[i].e.active) {
-                //Prevent the goal from activating.
-                value = false;
-
-                //If one switch is inactive, then checking for more won't change anything.
-                break;
-            }
-        }
-        //Activate the goal if all switches are active. Keep it inactive otherwise.
-        TriggerBox.G1.e.active = value;
-    }
-    */
 }

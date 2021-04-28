@@ -1,14 +1,21 @@
-//LABELS
+//ENTITY LABELS
 const SWITCH = 's';
 const GOAL = 'g';
 
-
+/**
+ * Object representing a game level.
+ */
 //Going through a level without making any mistake shouldn't be made overly difficult. 
 //As a result of this, levels are kept on the shorter side.
 class Level {
 
     /**
-     * @param musicFile {String} - 
+     * @param title {String} - The level's title.
+     * @param startPosition {Vector2D} - The player's starting position.
+     * @param objective {String} - List of the level's objectives.
+     * @param musicFile {any} - Name of the music file associated with the level.
+     * @param platforms {Array} - The array of platforms the level holds.
+     * @param entities {Array} - The array of entities the level holds.
      */
     constructor(title, startPosition, objective, musicFile, platforms, entities) {
         this.name = title;
@@ -17,9 +24,13 @@ class Level {
         this.trackName = musicFile;
         this.platformArr = platforms;
         this.entityArr = entities;
+        //The actual track will be set in preload().
         this.track = null;
     }
 
+    /** Holds all levels of the game. */
+    //In order to prevent some tunneling (passing through walls) issues, the platforms
+    //usually are made slightly longer.
     static list = [
 
         //LEVEL 0 (TUTORIAL)
@@ -71,7 +82,7 @@ class Level {
 
             //ENTITIES ARRAY
             [
-                new Entity(new Vector2D(1235, 150), 15, 100, Entity.cyanRectStack, Entity.rectCheck, Entity.endGate, undefined),
+                new Entity(new Vector2D(1235, 150), 15, 100, Entity.cyanRectStack, Entity.rectCheck, Entity.levelClear, undefined),
                 new Entity(new Vector2D(975, 640), 375, 10, Entity.orangeRects, Entity.rectCheck, Entity.teleport, new Vector2D(1450, 575)),
 
                 //The text here needs to be a function since settings only get set at preload().
@@ -84,7 +95,6 @@ class Level {
             ]
         ),
 
-        //LEVEL 1
         new Level (
             //LEVEL NAME
             'LEVEL 01',
@@ -141,13 +151,13 @@ class Level {
             //ENTITIES ARRAY
             [
                 //Goal
-                new LabeledEntity(new Vector2D(1760, 175), 15, 125, StateEntity.cyanRectStackActive, StateEntity.rectCheckActive, Entity.endGate, null, GOAL),
+                new LabeledEntity(new Vector2D(1760, 175), 15, 125, StateEntity.cyanRectStackActive, StateEntity.rectCheckActive, Entity.levelClear, null, GOAL),
 
                 //Switches
-                new LabeledEntity(new Vector2D(800, 1250), 50, 50, StateEntity.greenRect, StateEntity.rectCheckOnce, LabeledEntity.groupCheck, LabeledEntity.activateGoal, SWITCH),
-                new LabeledEntity(new Vector2D(1100, 550), 50, 50, StateEntity.greenRect, StateEntity.rectCheckOnce, LabeledEntity.groupCheck, LabeledEntity.activateGoal, SWITCH),
-                new LabeledEntity(new Vector2D(165, 300), 50, 50, StateEntity.greenRect, StateEntity.rectCheckOnce, LabeledEntity.groupCheck, LabeledEntity.activateGoal, SWITCH),
-                new LabeledEntity(new Vector2D(385, 300), 50, 50, StateEntity.greenRect, StateEntity.rectCheckOnce, LabeledEntity.groupCheck, LabeledEntity.activateGoal, SWITCH),
+                new LabeledEntity(new Vector2D(800, 1250), 50, 50, StateEntity.greenSqr, StateEntity.rectCheckOnce, LabeledEntity.groupCheck, LabeledEntity.activateGoal, SWITCH),
+                new LabeledEntity(new Vector2D(1100, 550), 50, 50, StateEntity.greenSqr, StateEntity.rectCheckOnce, LabeledEntity.groupCheck, LabeledEntity.activateGoal, SWITCH),
+                new LabeledEntity(new Vector2D(165, 300), 50, 50, StateEntity.greenSqr, StateEntity.rectCheckOnce, LabeledEntity.groupCheck, LabeledEntity.activateGoal, SWITCH),
+                new LabeledEntity(new Vector2D(385, 300), 50, 50, StateEntity.greenSqr, StateEntity.rectCheckOnce, LabeledEntity.groupCheck, LabeledEntity.activateGoal, SWITCH),
 
                 //Other
                 new Entity(new Vector2D(1200, 990), 200, 10, Entity.orangeRects, Entity.rectCheck, Entity.teleport, new Vector2D(1462.5, 525)),
@@ -228,7 +238,7 @@ class Level {
             //ENTITIES ARRAY
             [
                 //Goal.
-                new Entity(new Vector2D(315, 3500), 15, 100, Entity.cyanRectStack, Entity.rectCheck, Entity.endGate, undefined),
+                new Entity(new Vector2D(315, 3500), 15, 100, Entity.cyanRectStack, Entity.rectCheck, Entity.levelClear, undefined),
 
                 //Teleport.
                 new Entity(new Vector2D(1425, 2290), 825, 10, Entity.orangeRects, Entity.rectCheck, Entity.teleport, new Vector2D(550, 2000)),
@@ -261,7 +271,7 @@ class Level {
             //STARTING POSITION
             new Vector2D(1225, 825),
             //OBJECTIVE(S)
-            "- X.",
+            "- None.",
             //TRACK NAME
             "Neon.Deflector - Outpost X",
 
@@ -289,8 +299,7 @@ class Level {
                 new Entity(new Vector2D(900, 1100), 50, 10, Entity.redTriangles, Entity.rectCheck, Entity.knockback, new Vector2D(0, -50)),
                 new StateEntity(new Vector2D(660, 1000), 50, 2, StateEntity.yellowCircles, StateEntity.circleCheckHold, Entity.dashRefresh),
 
-                new Entity(new Vector2D(660, 750), 275, 100, Entity.whiteTextBox, misc.noCheck, misc.none, 'These are the entities that have been added up to now.\n\nTriggerboxes and thier effects will be re-written as entities and added back soon.'),
-                new Entity(new Vector2D(400, 1000), 125, 50, Entity.whiteTextBox, misc.noCheck, misc.none, 'These will be useful for creating a tutorial level.'),
+                new Entity(new Vector2D(400, 1000), 125, 50, Entity.whiteTextBox, misc.noCheck, misc.none, 'Sample text.'),
                 new Entity(new Vector2D(400, 1150), 150, 50, Entity.whiteTextBox, misc.noCheck, misc.none, 'Textbox.'),
                 new Entity(new Vector2D(900, 1150), 50, 50, Entity.whiteTextBox, misc.noCheck, misc.none, 'Jump pad.'),
                 new Entity(new Vector2D(660, 1150), 100, 50, Entity.whiteTextBox, misc.noCheck, misc.none, 'Dash refresh')

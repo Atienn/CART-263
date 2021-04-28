@@ -17,7 +17,7 @@ let state;
 //Tracks the user's desired settings (inputs, volume, etc).
 let settings;
 
-
+/** Object representation ofthe cursor. */
 let mouse = {
     //Tracks if the user has clicked their mouse for the specific frame it's referred on.
     click: false,
@@ -107,7 +107,7 @@ function setup()
 
     //#region Audio Settings
 
-    //
+    //Set the game volume.
     masterVolume(settings.volume / 10);
 
     //Give the current track an abstract sound file so that analyzers can connect to it and to
@@ -198,18 +198,6 @@ function draw()
     }
 }
 
-
-/**
- * Is called when the user types a key (ignores function keys like Shift and Control).
- * Calls the current state's key typed event.
- */
-//function keyTyped() { state.keyType(); }
-
-/**
- * Is called whenever the user is types a key on their keyboard.
- * Calls the current state's key pressed event.
- */
-//function keyPressed() { state.keyPress(); }
 
 
 /**

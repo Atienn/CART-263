@@ -7,23 +7,23 @@ let MenuState =
     track: null,
     trackName: "AIRGLOW - Blueshift",
 
-    //Tracks what text should be displayed to ???
+    //Tracks what text should be displayed on the bottom of the screen.
     contextualText: "",
-
-    //Tracks if the settings panel is active.
-    settingsPanel: false,
 
     //Tracks if the level panel is active.
     levelPanel: false,
 
-    //
+    //Tracks if the settings panel is active.
+    settingsPanel: false,
+
+    //Arrays of buttons. 
     menuButtons: [],
     levelButtons: [],
     settingsButtons: [],
 
 
     /**
-     * Switch to the menu music, disables the settings panel and switches the state.
+     * Switch to the menu music, creates the buttons.
      */
     setup()
     {
@@ -71,9 +71,6 @@ let MenuState =
         this.contextualText = "";
 
         //Check if the mouse is hovering over any button.
-        //If it is 'selected' will receive the index of the button.
-        //TriggerBox.isWithinBound(new Vector2D(mouseX, mouseY), TriggerBox.allM);
-
         Entity.checkAll(mouse, this.menuButtons);
         
 
@@ -90,6 +87,7 @@ let MenuState =
 
         //Render the level select panel if it's active.
         if(this.levelPanel)  {
+            //Check if any of the level buttons are being hovered over.
             Entity.checkAll(mouse, this.levelButtons);
 
             //Makes the rectangle's fill white.
@@ -110,7 +108,7 @@ let MenuState =
             textSize(40);
             //Write the title of the panel.
             text('LEVEL SELECT', 785, 350);
-
+            //Display all level buttons.
             Entity.displayAll(this.levelButtons);
         }
 
@@ -119,6 +117,7 @@ let MenuState =
         //If the settings panel is active, render it.
         else if(this.settingsPanel)
         {
+            //Check if any of the level buttons are being hovered over.
             Entity.checkAll(mouse, this.settingsButtons);
             
             //Makes the rectangle's fill white.
@@ -159,7 +158,7 @@ let MenuState =
             text('Affects the sharpness of the image. Lower to increase performance.', 825, 515);
             text('Modifies of how loud all game sounds are.', 825, 590);
             text('Use to re-map game controls.', 825, 665);
-
+            //Display all settings buttons.
             Entity.displayAll(this.settingsButtons);
         }
 
@@ -208,6 +207,7 @@ let MenuState =
     
     //#region BUTTON FUNCTIONS
 
+    /** Enables / Disables the levels panel. */
     playSelect() {
         if(mouse.click) {
             //Disable the settings panel if it's active and activate the level select one.
@@ -217,6 +217,7 @@ let MenuState =
         MenuState.contextualText = "Select a level. Adjusting settings first is recommended.";
     },
 
+    /** Switches to the gane state. */
     launchLevel() {
         if(mouse.click) {
             switchState(GameState, this.mod);
@@ -224,6 +225,7 @@ let MenuState =
         MenuState.contextualText = "Start playing.";
     },
 
+    /** Enables / Disables the settings panel. */
     settingSelect() {
         if(mouse.click) {
 
@@ -234,6 +236,7 @@ let MenuState =
         MenuState.contextualText = "Adjust inputs, audio volume or pixel density.";
     },
 
+    /** Quits the game. */
     quitSelect() {
         if(mouse.click) {
             quit();
@@ -269,6 +272,9 @@ let MenuState =
         MenuState.contextualText = "Decrease the game's volume.";
     },
 
+    /**
+     * Brings up a panel that prompts the user to rebind thier inputs.
+     */
     rebindSelect() {
         if(mouse.click) {
 

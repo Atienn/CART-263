@@ -3,9 +3,8 @@ const musicLocation = 'assets/sounds/';
 //The extenstion of music files.
 const musicExt = '.mp3';
 
-/**
- * 
- */
+
+/** Object which handles and tracks everything related to music. */
 let music = {
 
     //Tracks the reference to the currently playing track.
@@ -25,7 +24,9 @@ let music = {
 
 
     /**
-     * 
+     * Tries to load a track from the game's files.
+     * @param trackName {String} - The name of the file (which should be the name of the music track)
+     * without the path leading to it or it's file extension.
      */
     loadTrack(trackName) {
         return loadSound(musicLocation + trackName + musicExt);
@@ -33,7 +34,9 @@ let music = {
 
 
     /**
-     * 
+     * Stops playing the current track and starts the given one.
+     * @param track {any} - The new track to switch to.
+     * @param trackName {String} - The name of the track.
      */
     setTrack(track, trackName) {
         //Unlocks the analyzers from 'currentMusic' as it's switching track.
@@ -58,7 +61,7 @@ let music = {
 
 
     /**
-     * Shows the name of the track playing at the bottom of the screen.
+     * Shows the name of the track playing at the bottom-right of the screen.
      */
     displayCurrTrack() {
         push(); //We don't want to keep the following text settings.
