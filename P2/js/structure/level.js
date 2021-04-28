@@ -2,6 +2,9 @@
 const SWITCH = 's';
 const GOAL = 'g';
 
+
+//Going through a level without making any mistake shouldn't be made overly difficult. 
+//As a result of this, levels are kept on the shorter side.
 class Level {
 
     /**
@@ -77,7 +80,7 @@ class Level {
                 new Entity(new Vector2D(1700, 700), 75, 100, Entity.whiteTextBox, misc.noCheck, misc.none, `Jumping can be done off walls.`),
                 new Entity(new Vector2D(1350, 450), 100, 100, Entity.dynamicTextBox, misc.noCheck, misc.none, () => { return `Use ${settings.inputName.dash} to dash.`}),
                 new Entity(new Vector2D(700, 150), 195, 100, Entity.whiteTextBox, misc.noCheck, misc.none, 'The goal of this game is to complete levels in the least amount of time possible.\n\nThe timer at the top-left corner shows the amount of time taken.'),
-                new Entity(new Vector2D(1050, 150), 100, 100, Entity.dynamicTextBox, misc.noCheck, misc.none, () => { return `Use ${settings.inputName.dash} to quick-restart.`})
+                new Entity(new Vector2D(1050, 150), 100, 100, Entity.dynamicTextBox, misc.noCheck, misc.none, () => { return `Use ${settings.inputName.restart} to quick-restart.`})
             ]
         ),
 
@@ -154,7 +157,107 @@ class Level {
 
         new Level (
             //LEVEL NAME
-            'LEVEL TEMPLATE',
+            'LEVEL 02',
+            //STARTING POSITION
+            new Vector2D(250, 2000),
+            //OBJECTIVE(S)
+            "- Reach the end gate.",
+            //TRACK NAME
+            "Aries Beats - Infinity",
+
+            //PLATFORM BUNDLE
+            {
+                g: [
+                    new Platform(2050, 125, 600, false),
+                    new Platform(2300, 575, 2275, false),
+                    new Platform(2150, 1100, 1250, false),
+                    new Platform(2000, 1650, 1800, false),
+                    new Platform(2200, 2250, 2700, false),
+                    new Platform(350, 2500, 2700, false),
+                    new Platform(2400, 2675, 3825, false),
+                    new Platform(2100, 3800, 3900, false),
+                    new Platform(3100, 2675, 4075, false),
+                    new Platform(3025, 2400, 2700, false),
+                    new Platform(3700, 625, 2425, false),
+                    new Platform(3600, 275, 650, false)
+                ],
+                c: [
+                    new Platform(1800, 125, 600, false),
+                    new Platform(1300, 575, 2500, false),
+                    new Platform(1500, 2700, 3825, false),
+                    new Platform(1900, 3800, 4075, false),
+                    new Platform(2800, 625, 3900, false),
+                    new Platform(3100, 1900, 2000, false),
+                    new Platform(3250, 1450, 1550, false),
+                    new Platform(3400, 1000, 1100, false),
+                    new Platform(3400, 275, 650, false)
+                ],
+
+                l: [
+                    new Platform(1250, 2150, 2325, true),
+                    new Platform(1800, 2000, 2325, true),
+                    new Platform(150, 1775, 2075, true),
+                    new Platform(600, 1275, 1800, true),
+                    new Platform(600, 2050, 2325, true),
+                    new Platform(2500, 350, 1300, true),
+                    new Platform(2700, 2200, 2425, true),
+                    new Platform(3900, 2100, 2800, true),
+                    new Platform(2700, 3025, 3125, true),
+                    new Platform(2000, 2775, 3100, true),
+                    new Platform(1550, 2775, 3250, true),
+                    new Platform(1100, 2775, 3400, true),
+                    new Platform(650, 2775, 3400, true),
+                    new Platform(650, 3600, 3725, true),
+                    new Platform(300, 3375, 3625, true)
+                ],
+                r: [
+                    new Platform(1100, 2150, 2325, true),
+                    new Platform(1650, 2000, 2325, true),
+                    new Platform(2250, 2200, 2325, true),
+                    new Platform(2700, 350, 1500, true),
+                    new Platform(3800, 1475, 1900, true),
+                    new Platform(3800, 2100, 2425, true),
+                    new Platform(4050, 1875, 3125, true),
+                    new Platform(2400, 3025, 3725, true),
+                    new Platform(1900, 2775, 3100, true),
+                    new Platform(1450, 2775, 3250, true),
+                    new Platform(1000, 2775, 3400, true)
+                ]
+            },
+
+            //ENTITIES ARRAY
+            [
+                //Goal.
+                new Entity(new Vector2D(315, 3500), 15, 100, Entity.cyanRectStack, Entity.rectCheck, Entity.endGate, undefined),
+
+                //Teleport.
+                new Entity(new Vector2D(1425, 2290), 825, 10, Entity.orangeRects, Entity.rectCheck, Entity.teleport, new Vector2D(550, 2000)),
+                new Entity(new Vector2D(3250, 2390), 550, 10, Entity.orangeRects, Entity.rectCheck, Entity.teleport, new Vector2D(2400, 2075)),
+                new Entity(new Vector2D(3375, 3090), 675, 10, Entity.orangeRects, Entity.rectCheck, Entity.teleport, new Vector2D(3850, 2075)),
+                new Entity(new Vector2D(1525, 3690), 875, 10, Entity.orangeRects, Entity.rectCheck, Entity.teleport, new Vector2D(2550, 3000)),
+
+                //Jump pad.
+                new Entity(new Vector2D(2600, 2200), 100, 10, Entity.redTriangles, Entity.rectCheck, Entity.knockback, new Vector2D(0, -55)),
+
+                //Dash refresh.
+                new StateEntity(new Vector2D(2600, 1200), 75, 2, StateEntity.yellowCircles, StateEntity.circleCheckHold, Entity.dashRefresh),
+                new StateEntity(new Vector2D(2600, 750), 75, 2, StateEntity.yellowCircles, StateEntity.circleCheckHold, Entity.dashRefresh),
+                new StateEntity(new Vector2D(3300, 2875), 75, 2, StateEntity.yellowCircles, StateEntity.circleCheckHold, Entity.dashRefresh),
+                new StateEntity(new Vector2D(1950, 3175), 75, 2, StateEntity.yellowCircles, StateEntity.circleCheckHold, Entity.dashRefresh),
+                new StateEntity(new Vector2D(1500, 3325), 75, 2, StateEntity.yellowCircles, StateEntity.circleCheckHold, Entity.dashRefresh),
+                new StateEntity(new Vector2D(1050, 3475), 75, 2, StateEntity.yellowCircles, StateEntity.circleCheckHold, Entity.dashRefresh),
+                
+                //Textboxes.
+                new Entity(new Vector2D(2600, 2000), 100, 100, Entity.whiteTextBox, misc.noCheck, misc.none, 'Leap and hold.\nRide the surge.\nDemand the skies.'),
+                new Entity(new Vector2D(2600, 25), 250, 75, Entity.whiteTextBox, misc.noCheck, misc.none, 'Still, at the edge of the world,\nthere is nothing for you here.'),
+                new Entity(new Vector2D(2600, 125), 250, 50, Entity.whiteTextBox, misc.noCheck, misc.none, 'Will you return to what you know, and keep living life?\n\nOr will cast yourself into oblivion, as an act of spite?'),
+                new Entity(new Vector2D(3300, 2975), 150, 50, Entity.whiteTextBox, misc.noCheck, misc.none, 'Fly again, and again.')
+            ]
+        ),
+
+        new Level (
+            //LEVEL NAME
+            'TEST LEVEL',
             //STARTING POSITION
             new Vector2D(1225, 825),
             //OBJECTIVE(S)

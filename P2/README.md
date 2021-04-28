@@ -3,7 +3,7 @@
 Built off [template-p5-project](https://github.com/pippinbarr/cart253/tree/master/templates/template-p5-project) provided by [Pippin Barr](https://github.com/pippinbarr). Makes use of the [P5.js](https://p5js.org/) library.
 
 Made as part of the Creative Computation II (CART 263) courseworks.
-It is an entension of the previous version of 'Project Vector' that was made within the previous course (CART 253).
+This project is an entension of the previous version of 'Project Vector' that was made within the previous course (CART 253).
 
 This is a platformer game with a focus on speed.
 The goal is to navigate levels in the shortest amount of time possible.
@@ -16,10 +16,11 @@ Play it [here](https://atienn.github.io/CART-263/Project%20Vector/).
 All music used is royalty-free.
 
 Tracks:
-- [AIRGLOW - Blueshift]()
-- [Floating Anarchy]()
-- [EVA - 失望した]()
-- [Neon.Deflector - Outpost X]()
+- [AIRGLOW - Blueshift](https://open.spotify.com/album/08kV4nhdlCBbCWt9fO6AAa?highlight=spotify:track:7Glh11xQGaEbuw1M186WpK)
+- [Floating Anarchy](https://open.spotify.com/album/6ababgJTbXJE7AF78JyQdk)
+- [EVA - 失望した](https://open.spotify.com/track/5E4KvUjuwUfyuRIzVQwt7u?si=6a75a92b434345f8)
+- [Aries Beats - Infinity](https://open.spotify.com/track/2kfBEU5s3dqc1RCtaOPuGh?si=5b6faf8f908d420e)
+- [Neon.Deflector - Outpost X](https://open.spotify.com/album/0I1tvrpyiAJylAcEPLQ4uG?highlight=spotify:track:201W6jH0ZKmpihW4q4SzwT)
 
 
 
@@ -29,7 +30,7 @@ Tracks:
 In terms of play, the general aim of this project was to create a platformer game which encourages 'speedrunning'. In doing so, mastery of controls and mechanics would strongly come into play. Player movement would be fluid enough so that simply moving around an enviroment should be fun. Game mechanics would be intuitive enough not to require much explanation.
 
 
-In terms of code, since the game runs on its own custom 'engine', the aim was to re-work it into something more organized, yet still malleable (as in new ideas can be implemented easily). I what I've made makes fairly good use of JavaScript's strengths as a programming languages (especially with being able to refer to functions using variables).
+In terms of code, since the game runs on its own custom 'engine', the aim was to re-work it into something more organized, yet still malleable (as in new ideas can be implemented easily). I what I've made makes fairly good use of JavaScript's strengths as a programming language (especially being able to refer to methods using variables, which I've used extensively).
 
 
 
